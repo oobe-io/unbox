@@ -1,0 +1,56 @@
+/* Unbox 管理画面。WordPress 管理画面の部品に合わせ、色は最小限にする */
+.unbox { max-width: 860px; }
+.unbox-title { margin-bottom: 4px; }
+.unbox-lead { margin-top: 0; color: #50575e; }
+
+.unbox-tabs { display: flex; gap: 4px; border-bottom: 1px solid #c3c4c7; margin: 20px 0 0; }
+.unbox-tab { background: none; border: 1px solid transparent; border-bottom: 0; padding: 8px 16px; font-size: 14px; cursor: pointer; color: #50575e; margin-bottom: -1px; border-radius: 4px 4px 0 0; }
+.unbox-tab:hover { color: #1d2327; }
+.unbox-tab.is-active { background: #fff; border-color: #c3c4c7; color: #1d2327; font-weight: 600; }
+
+.unbox-card { background: #fff; border: 1px solid #c3c4c7; border-top: 0; padding: 8px 24px 20px; }
+.unbox-card h2 { font-size: 14px; margin: 20px 0 10px; }
+
+.unbox-choice { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid #dcdcde; border-radius: 4px; margin-bottom: 8px; cursor: pointer; }
+.unbox-choice:has(input:checked) { border-color: #2271b1; background: #f6f9fc; }
+.unbox-choice input { margin-top: 3px; }
+.unbox-choice strong { display: block; }
+.unbox-choice small, .unbox-field small, .unbox-drop small { display: block; color: #646970; margin-top: 2px; }
+
+.unbox-localwp { margin: 12px 0 4px; padding: 12px; background: #f6f7f7; border-radius: 4px; }
+.unbox-field { display: block; margin: 12px 0; }
+.unbox-field > span:first-child { display: block; font-weight: 600; margin-bottom: 4px; }
+.unbox-inline { display: inline-flex; align-items: center; gap: 4px; }
+.unbox-check { display: block; margin: 6px 0; }
+.unbox-roots-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0 16px; }
+.unbox-roots-list .unbox-check { word-break: break-all; }
+
+.unbox-drop { display: block; border: 2px dashed #c3c4c7; border-radius: 6px; padding: 40px 16px; text-align: center; cursor: pointer; color: #50575e; }
+.unbox-drop:hover, .unbox-drop.is-over { border-color: #2271b1; background: #f6f9fc; color: #1d2327; }
+.unbox-drop input { display: none; }
+.unbox-note { color: #646970; }
+
+.unbox-files td { vertical-align: middle; }
+.unbox-name { word-break: break-all; }
+.unbox-btns { white-space: nowrap; text-align: right; }
+.unbox-badge { display: inline-block; font-size: 11px; padding: 0 6px; border-radius: 3px; background: #f0f0f1; color: #50575e; }
+.unbox-link-danger { color: #b32d2e !important; }
+
+.unbox-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, .45); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.unbox-modal[hidden] { display: none; }
+.unbox-modal-box { background: #fff; border-radius: 6px; width: 100%; max-width: 640px; max-height: calc(100vh - 32px); overflow: auto; padding: 20px 24px; box-shadow: 0 10px 40px rgba(0, 0, 0, .25); }
+.unbox-modal-box h2 { margin-top: 0; }
+.unbox-progress { height: 8px; background: #f0f0f1; border-radius: 4px; overflow: hidden; }
+.unbox-progress-bar { height: 100%; width: 0; background: #2271b1; transition: width .3s; }
+.unbox-modal.is-done .unbox-progress-bar { background: #00a32a; }
+.unbox-modal.is-error .unbox-progress-bar { background: #d63638; }
+.unbox-modal.is-error .unbox-status { color: #b32d2e; }
+.unbox-status { min-height: 1.5em; }
+.unbox-actions { display: flex; gap: 8px; justify-content: flex-end; margin-bottom: 0; }
+.unbox-summary { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+.unbox-summary th, .unbox-summary td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #f0f0f1; vertical-align: top; word-break: break-all; }
+.unbox-summary th { width: 9em; color: #50575e; font-weight: normal; }
+.unbox-warn { padding: 8px 12px; background: #fcf9e8; border-left: 4px solid #dba617; }
+.unbox-danger { padding: 8px 12px; background: #fcf0f1; border-left: 4px solid #d63638; }
+.unbox-steps { margin-left: 1.5em; }
+.unbox-log pre, .unbox-errors { max-height: 200px; overflow: auto; background: #f6f7f7; padding: 8px; font-size: 12px; white-space: pre-wrap; word-break: break-all; }
