@@ -45,7 +45,7 @@ class Unbox_Storage {
 		foreach ( array( '', 'archives', 'jobs', 'uploads' ) as $sub ) {
 			$d = self::dir( $sub );
 			if ( ! is_dir( $d ) && ! wp_mkdir_p( $d ) ) {
-				throw new Unbox_Exception( sprintf( /* translators: %s: folder path */ __( 'Cannot create the working folder: %s (wp-content must be writable)', 'unbox' ), $d ) );
+				throw new Unbox_Exception( sprintf( /* translators: %s: folder path */ __( 'Cannot create the working folder: %s (wp-content must be writable)', 'unbox-by-oobe' ), $d ) );
 			}
 			self::protect( $d );
 		}
@@ -102,12 +102,12 @@ class Unbox_Storage {
 	/** "own:ファイル名" 形式の ID から実パスを返す。 */
 	public static function resolve_archive( $id ) {
 		if ( ! preg_match( '/^(own|ai1wm):([A-Za-z0-9._\-]+\.(unbox|wpress|zip))$/i', (string) $id, $m ) ) {
-			throw new Unbox_Exception( __( 'Invalid file', 'unbox' ) );
+			throw new Unbox_Exception( __( 'Invalid file', 'unbox-by-oobe' ) );
 		}
 		$dir  = $m[1] === 'own' ? self::dir( 'archives' ) : WP_CONTENT_DIR . '/ai1wm-backups';
 		$path = $dir . '/' . $m[2];
 		if ( ! is_file( $path ) ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: file name */ __( 'File not found: %s', 'unbox' ), $m[2] ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: file name */ __( 'File not found: %s', 'unbox-by-oobe' ), $m[2] ) );
 		}
 		return array( 'path' => $path, 'source' => strtolower( $m[1] ), 'name' => $m[2] );
 	}
@@ -177,17 +177,17 @@ class Unbox_Job {
 
 	public static function load( $id ) {
 		if ( ! preg_match( '/^[a-f0-9]{16}$/', (string) $id ) ) {
-			throw new Unbox_Exception( __( 'Invalid job', 'unbox' ) );
+			throw new Unbox_Exception( __( 'Invalid job', 'unbox-by-oobe' ) );
 		}
 		$job     = new self();
 		$job->id = $id;
 		$raw     = @file_get_contents( $job->dir() . '/state.json' );
 		if ( $raw === false ) {
-			throw new Unbox_Exception( __( 'Job not found (it has already finished or was cancelled)', 'unbox' ) );
+			throw new Unbox_Exception( __( 'Job not found (it has already finished or was cancelled)', 'unbox-by-oobe' ) );
 		}
 		$job->data = json_decode( $raw, true );
 		if ( ! is_array( $job->data ) ) {
-			throw new Unbox_Exception( __( 'Cannot read the job state', 'unbox' ) );
+			throw new Unbox_Exception( __( 'Cannot read the job state', 'unbox-by-oobe' ) );
 		}
 		return $job;
 	}
@@ -200,7 +200,7 @@ class Unbox_Job {
 	public function save() {
 		$tmp = $this->dir( 'state.json.tmp' );
 		if ( file_put_contents( $tmp, wp_json_encode( $this->data ) ) === false || ! rename( $tmp, $this->dir( 'state.json' ) ) ) {
-			throw new Unbox_Exception( __( 'Cannot save the job state (the disk may be full)', 'unbox' ) );
+			throw new Unbox_Exception( __( 'Cannot save the job state (the disk may be full)', 'unbox-by-oobe' ) );
 		}
 	}
 

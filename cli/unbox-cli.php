@@ -16,7 +16,7 @@ if ( PHP_SAPI !== 'cli' ) {
 
 /*
  * WordPress の外で動くので、翻訳関数を自前で用意する。
- * 環境変数の言語が ja（または未設定）なら languages/unbox-ja.po の訳を使う。
+ * 環境変数の言語が ja（または未設定）なら languages/unbox-by-oobe-ja.po の訳を使う。
  */
 if ( ! function_exists( '__' ) ) {
 	function unbox_cli_translations() {
@@ -29,7 +29,7 @@ if ( ! function_exists( '__' ) ) {
 		if ( $lang !== '' && stripos( $lang, 'ja' ) !== 0 ) {
 			return $map;
 		}
-		$po = @file_get_contents( __DIR__ . '/../languages/unbox-ja.po' );
+		$po = @file_get_contents( __DIR__ . '/../languages/unbox-by-oobe-ja.po' );
 		if ( $po === false ) {
 			return $map;
 		}

@@ -48,10 +48,10 @@ class Unbox_Wpress {
 	public static function safe_relpath( $path ) {
 		$path = str_replace( '\\', '/', (string) $path );
 		if ( $path === '' || strpos( $path, "\0" ) !== false ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: path */ __( 'Invalid path in the archive: %s', 'unbox' ), $path ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: path */ __( 'Invalid path in the archive: %s', 'unbox-by-oobe' ), $path ) );
 		}
 		if ( $path[0] === '/' || preg_match( '#^[A-Za-z]:#', $path ) ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: path */ __( 'The archive contains an absolute path: %s', 'unbox' ), $path ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: path */ __( 'The archive contains an absolute path: %s', 'unbox-by-oobe' ), $path ) );
 		}
 		$parts = array();
 		foreach ( explode( '/', $path ) as $part ) {
@@ -59,12 +59,12 @@ class Unbox_Wpress {
 				continue;
 			}
 			if ( $part === '..' ) {
-				throw new Unbox_Exception( sprintf( /* translators: %s: path */ __( 'The archive contains a path pointing outside: %s', 'unbox' ), $path ) );
+				throw new Unbox_Exception( sprintf( /* translators: %s: path */ __( 'The archive contains a path pointing outside: %s', 'unbox-by-oobe' ), $path ) );
 			}
 			$parts[] = $part;
 		}
 		if ( ! $parts ) {
-			throw new Unbox_Exception( __( 'The archive contains an empty path', 'unbox' ) );
+			throw new Unbox_Exception( __( 'The archive contains an empty path', 'unbox-by-oobe' ) );
 		}
 		return implode( '/', $parts );
 	}
@@ -79,7 +79,7 @@ class Unbox_Wpress_Reader {
 		$this->path = $path;
 		$this->fh   = @fopen( $path, 'rb' );
 		if ( ! $this->fh ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot open the archive: %s', 'unbox' ), $path ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot open the archive: %s', 'unbox-by-oobe' ), $path ) );
 		}
 		$this->size = self::filesize( $path, $this->fh );
 	}
@@ -121,12 +121,12 @@ class Unbox_Wpress_Reader {
 	 */
 	public function header_at( $offset ) {
 		if ( $offset + Unbox_Wpress::HEADER_SIZE > $this->size ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: byte offset */ __( 'The archive is truncated (at byte %s)', 'unbox' ), $offset ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: byte offset */ __( 'The archive is truncated (at byte %s)', 'unbox-by-oobe' ), $offset ) );
 		}
 		fseek( $this->fh, $offset );
 		$block = fread( $this->fh, Unbox_Wpress::HEADER_SIZE );
 		if ( strlen( $block ) !== Unbox_Wpress::HEADER_SIZE ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: byte offset */ __( 'Cannot read a header (at byte %s)', 'unbox' ), $offset ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: byte offset */ __( 'Cannot read a header (at byte %s)', 'unbox-by-oobe' ), $offset ) );
 		}
 		if ( $block === str_repeat( "\0", Unbox_Wpress::HEADER_SIZE ) ) {
 			return null;
@@ -136,13 +136,13 @@ class Unbox_Wpress_Reader {
 		$dir  = trim( rtrim( $h['path'], "\0" ) );
 		$size = trim( rtrim( $h['size'], "\0" ) );
 		if ( $size === '' || ! ctype_digit( $size ) ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: byte offset */ __( 'Cannot read the size in a header (at byte %s). The archive may be corrupted', 'unbox' ), $offset ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: byte offset */ __( 'Cannot read the size in a header (at byte %s). The archive may be corrupted', 'unbox-by-oobe' ), $offset ) );
 		}
 		$rel  = ( $dir === '' || $dir === '.' ) ? $name : $dir . '/' . $name;
 		$data = $offset + Unbox_Wpress::HEADER_SIZE;
 		$len  = (int) $size;
 		if ( $data + $len > $this->size ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: file name */ __( 'The archive is truncated: %s', 'unbox' ), $rel ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: file name */ __( 'The archive is truncated: %s', 'unbox-by-oobe' ), $rel ) );
 		}
 		return array(
 			'name'  => Unbox_Wpress::safe_relpath( $rel ),
@@ -161,11 +161,11 @@ class Unbox_Wpress_Reader {
 	public function extract_to( array $entry, $dest, &$written, $deadline = 0 ) {
 		$dir = dirname( $dest );
 		if ( ! is_dir( $dir ) && ! @mkdir( $dir, 0755, true ) && ! is_dir( $dir ) ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: folder path */ __( 'Cannot create the folder: %s', 'unbox' ), $dir ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: folder path */ __( 'Cannot create the folder: %s', 'unbox-by-oobe' ), $dir ) );
 		}
 		$out = @fopen( $dest, $written > 0 ? 'cb' : 'wb' );
 		if ( ! $out ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot write the file: %s', 'unbox' ), $dest ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot write the file: %s', 'unbox-by-oobe' ), $dest ) );
 		}
 		if ( $written > 0 ) {
 			ftruncate( $out, $written );
@@ -176,11 +176,11 @@ class Unbox_Wpress_Reader {
 			$chunk = fread( $this->fh, (int) min( 1048576, $entry['size'] - $written ) );
 			if ( $chunk === false || $chunk === '' ) {
 				fclose( $out );
-				throw new Unbox_Exception( sprintf( /* translators: %s: file name */ __( 'Cannot read the archive: %s', 'unbox' ), $entry['name'] ) );
+				throw new Unbox_Exception( sprintf( /* translators: %s: file name */ __( 'Cannot read the archive: %s', 'unbox-by-oobe' ), $entry['name'] ) );
 			}
 			if ( fwrite( $out, $chunk ) !== strlen( $chunk ) ) {
 				fclose( $out );
-				throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Failed to write (the disk may be full): %s', 'unbox' ), $dest ) );
+				throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Failed to write (the disk may be full): %s', 'unbox-by-oobe' ), $dest ) );
 			}
 			$written += strlen( $chunk );
 			if ( $deadline && microtime( true ) > $deadline && $written < $entry['size'] ) {
@@ -198,7 +198,7 @@ class Unbox_Wpress_Reader {
 	/** 小さいエントリー（package.json 等）を文字列で読む。 */
 	public function read_string( array $entry, $max = 16777216 ) {
 		if ( $entry['size'] > $max ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: file name */ __( 'Too large to read: %s', 'unbox' ), $entry['name'] ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: file name */ __( 'Too large to read: %s', 'unbox-by-oobe' ), $entry['name'] ) );
 		}
 		if ( $entry['size'] === 0 ) {
 			return '';
@@ -214,7 +214,7 @@ class Unbox_Wpress_Reader {
 			fseek( $this->fh, $entry['data'] + $pos );
 			$chunk = fread( $this->fh, (int) min( $chunk_size, $entry['size'] - $pos ) );
 			if ( $chunk === false || $chunk === '' ) {
-				throw new Unbox_Exception( sprintf( /* translators: %s: file name */ __( 'Cannot read the archive: %s', 'unbox' ), $entry['name'] ) );
+				throw new Unbox_Exception( sprintf( /* translators: %s: file name */ __( 'Cannot read the archive: %s', 'unbox-by-oobe' ), $entry['name'] ) );
 			}
 			$pos += strlen( $chunk );
 			yield $chunk;
@@ -233,7 +233,7 @@ class Unbox_Wpress_Writer {
 		$this->path = $path;
 		$this->fh   = @fopen( $path, 'c+b' );
 		if ( ! $this->fh ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot write the archive: %s', 'unbox' ), $path ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot write the archive: %s', 'unbox-by-oobe' ), $path ) );
 		}
 		if ( $resume_size !== null ) {
 			ftruncate( $this->fh, $resume_size );
@@ -259,7 +259,7 @@ class Unbox_Wpress_Writer {
 
 	private function write( $data ) {
 		if ( fwrite( $this->fh, $data ) !== strlen( $data ) ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Failed to write (the disk may be full): %s', 'unbox' ), $this->path ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Failed to write (the disk may be full): %s', 'unbox-by-oobe' ), $this->path ) );
 		}
 	}
 
@@ -268,7 +268,7 @@ class Unbox_Wpress_Writer {
 		$name    = basename( $relpath );
 		$dir     = dirname( $relpath );
 		if ( strlen( $name ) > 255 || strlen( $dir ) > 4096 ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'The path is too long for the archive: %s', 'unbox' ), $relpath ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'The path is too long for the archive: %s', 'unbox-by-oobe' ), $relpath ) );
 		}
 		return pack( Unbox_Wpress::PACK_FORMAT, $name, (string) $size, (string) $mtime, $dir === '' ? '.' : $dir );
 	}
@@ -288,7 +288,7 @@ class Unbox_Wpress_Writer {
 		// ヘッダーを書く前に開けるか確かめる（読めないファイルはヘッダーごと出さずに済むように）
 		$in = @fopen( $src, 'rb' );
 		if ( ! $in ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot read the file: %s', 'unbox' ), $src ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot read the file: %s', 'unbox-by-oobe' ), $src ) );
 		}
 		if ( ! isset( $state['size'] ) ) {
 			$stat  = fstat( $in );

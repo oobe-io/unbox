@@ -115,7 +115,7 @@ class Unbox_Sql {
 		while ( true ) {
 			$i += strcspn( $sql, $stop, $i );
 			if ( $i >= $len ) {
-				throw new Unbox_Exception( __( 'Unclosed quote in SQL', 'unbox' ) );
+				throw new Unbox_Exception( __( 'Unclosed quote in SQL', 'unbox-by-oobe' ) );
 			}
 			if ( $sql[ $i ] === '\\' ) {
 				$i += 2;
@@ -219,7 +219,7 @@ class Unbox_Sql_Reader {
 		$this->path = $path;
 		$this->fh   = @fopen( $path, 'rb' );
 		if ( ! $this->fh ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot open the SQL file: %s', 'unbox' ), $path ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot open the SQL file: %s', 'unbox-by-oobe' ), $path ) );
 		}
 		fseek( $this->fh, $offset );
 	}

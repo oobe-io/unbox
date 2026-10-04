@@ -43,7 +43,7 @@ class Unbox_Export {
 			$name = preg_replace( '/\.local$/', '', $name );
 			$name = trim( preg_replace( '/[^a-z0-9\-]+/', '-', $name ), '-' );
 			if ( $name === '' ) {
-				throw new Unbox_Exception( __( 'Enter the LocalWP site name (letters, numbers and hyphens)', 'unbox' ) );
+				throw new Unbox_Exception( __( 'Enter the LocalWP site name (letters, numbers and hyphens)', 'unbox-by-oobe' ) );
 			}
 			$opt['local_name'] = $name;
 		}
@@ -57,7 +57,7 @@ class Unbox_Export {
 			try {
 				$opt['custom_excludes'][] = Unbox_Wpress::safe_relpath( $line );
 			} catch ( Unbox_Exception $e ) {
-				throw new Unbox_Exception( sprintf( /* translators: %s: path */ __( 'Invalid exclusion: %s', 'unbox' ), $line ) );
+				throw new Unbox_Exception( sprintf( /* translators: %s: path */ __( 'Invalid exclusion: %s', 'unbox-by-oobe' ), $line ) );
 			}
 		}
 		$roots = isset( $in['root_items'] ) ? $in['root_items'] : array();
@@ -71,12 +71,12 @@ class Unbox_Export {
 				continue;
 			}
 			if ( ! in_array( $name, $allowed, true ) ) {
-				throw new Unbox_Exception( sprintf( /* translators: %s: file or folder name */ __( 'This item cannot be selected from outside WordPress: %s', 'unbox' ), $name ) );
+				throw new Unbox_Exception( sprintf( /* translators: %s: file or folder name */ __( 'This item cannot be selected from outside WordPress: %s', 'unbox-by-oobe' ), $name ) );
 			}
 			$opt['root_items'][] = $name;
 		}
 		if ( $opt['root_items'] && $format === 'wpress' ) {
-			throw new Unbox_Exception( __( 'Folders outside WordPress cannot be included in .wpress (All-in-One WP Migration compatible). Choose .unbox or LocalWP zip', 'unbox' ) );
+			throw new Unbox_Exception( __( 'Folders outside WordPress cannot be included in .wpress (All-in-One WP Migration compatible). Choose .unbox or LocalWP zip', 'unbox-by-oobe' ) );
 		}
 		return apply_filters( 'unbox_export_options', $opt, $in );
 	}
@@ -96,7 +96,7 @@ class Unbox_Export {
 	}
 
 	public static function format_label( $format ) {
-		$labels = array( 'unbox' => '.unbox', 'wpress' => __( '.wpress (All-in-One WP Migration compatible)', 'unbox' ), 'localwp' => __( 'LocalWP zip', 'unbox' ) );
+		$labels = array( 'unbox' => '.unbox', 'wpress' => __( '.wpress (All-in-One WP Migration compatible)', 'unbox-by-oobe' ), 'localwp' => __( 'LocalWP zip', 'unbox-by-oobe' ) );
 		return isset( $labels[ $format ] ) ? $labels[ $format ] : $format;
 	}
 
@@ -112,7 +112,7 @@ class Unbox_Export {
 
 	public static function start( array $opt ) {
 		if ( is_multisite() ) {
-			throw new Unbox_Exception( __( 'Multisite is not supported yet', 'unbox' ) );
+			throw new Unbox_Exception( __( 'Multisite is not supported yet', 'unbox-by-oobe' ) );
 		}
 		$job = Unbox_Job::create(
 			'export',
@@ -124,7 +124,7 @@ class Unbox_Export {
 				'raw'   => array( 'home' => self::raw_option( 'home' ), 'siteurl' => self::raw_option( 'siteurl' ) ),
 			)
 		);
-		$job->log( sprintf( /* translators: %s: format name */ __( 'Started exporting (format: %s)', 'unbox' ), self::format_label( $opt['format'] ) ) );
+		$job->log( sprintf( /* translators: %s: format name */ __( 'Started exporting (format: %s)', 'unbox-by-oobe' ), self::format_label( $opt['format'] ) ) );
 		$job->save();
 		Unbox_Guard::install();
 		return $job;
@@ -136,7 +136,7 @@ class Unbox_Export {
 		switch ( $d['stage'] ) {
 			case 'enumerate':
 				if ( self::enumerate( $job, $deadline ) ) {
-					$job->log( sprintf( /* translators: %1$s: number of files, %2$s: size */ __( 'Found %1$s files (%2$s)', 'unbox' ), number_format_i18n( $d['enum']['count'] ), size_format( $d['enum']['bytes'], 1 ) ) );
+					$job->log( sprintf( /* translators: %1$s: number of files, %2$s: size */ __( 'Found %1$s files (%2$s)', 'unbox-by-oobe' ), number_format_i18n( $d['enum']['count'] ), size_format( $d['enum']['bytes'], 1 ) ) );
 					$d['stage'] = 'database';
 				}
 				break;
@@ -150,7 +150,7 @@ class Unbox_Export {
 					$d['db'] = array();
 				}
 				if ( $dumper->step( $d['db'], $job->dir( 'database.sql' ), $deadline ) ) {
-					$job->log( sprintf( /* translators: %1$d: tables, %2$s: rows, %3$s: size */ __( 'Exported the database (%1$d tables, %2$s rows, %3$s)', 'unbox' ), count( $d['db']['tables'] ), number_format_i18n( $d['db']['rows'] ), size_format( filesize( $job->dir( 'database.sql' ) ), 1 ) ) );
+					$job->log( sprintf( /* translators: %1$d: tables, %2$s: rows, %3$s: size */ __( 'Exported the database (%1$d tables, %2$s rows, %3$s)', 'unbox-by-oobe' ), count( $d['db']['tables'] ), number_format_i18n( $d['db']['rows'] ), size_format( filesize( $job->dir( 'database.sql' ) ), 1 ) ) );
 					$d['stage'] = 'archive';
 				}
 				break;
@@ -168,17 +168,17 @@ class Unbox_Export {
 		switch ( $d['stage'] ) {
 			case 'enumerate':
 				$n = isset( $d['enum']['count'] ) ? $d['enum']['count'] : 0;
-				return array( 'percent' => 2, 'message' => sprintf( /* translators: %s: number of files */ __( 'Counting files (%s)', 'unbox' ), number_format_i18n( $n ) ) );
+				return array( 'percent' => 2, 'message' => sprintf( /* translators: %s: number of files */ __( 'Counting files (%s)', 'unbox-by-oobe' ), number_format_i18n( $n ) ) );
 			case 'database':
 				$t = isset( $d['db']['tables'] ) ? count( $d['db']['tables'] ) : 0;
 				$i = isset( $d['db']['i'] ) ? $d['db']['i'] : 0;
-				return array( 'percent' => 5 + ( $t ? 20 * $i / $t : 0 ), 'message' => sprintf( /* translators: %1$d: tables done, %2$d: total tables */ __( 'Exporting the database (%1$d / %2$d tables)', 'unbox' ), $i, $t ) );
+				return array( 'percent' => 5 + ( $t ? 20 * $i / $t : 0 ), 'message' => sprintf( /* translators: %1$d: tables done, %2$d: total tables */ __( 'Exporting the database (%1$d / %2$d tables)', 'unbox-by-oobe' ), $i, $t ) );
 			case 'archive':
 				$total = max( 1, $d['enum']['bytes'] );
 				$done  = isset( $d['arc']['bytes'] ) ? $d['arc']['bytes'] : 0;
-				return array( 'percent' => 25 + 75 * min( 1, $done / $total ), 'message' => sprintf( /* translators: %1$s: size done, %2$s: total size */ __( 'Building the archive (%1$s / %2$s)', 'unbox' ), size_format( $done, 1 ), size_format( $total, 1 ) ) );
+				return array( 'percent' => 25 + 75 * min( 1, $done / $total ), 'message' => sprintf( /* translators: %1$s: size done, %2$s: total size */ __( 'Building the archive (%1$s / %2$s)', 'unbox-by-oobe' ), size_format( $done, 1 ), size_format( $total, 1 ) ) );
 			case 'done':
-				return array( 'percent' => 100, 'message' => __( 'Export finished', 'unbox' ), 'done' => true, 'result' => $d['result'] );
+				return array( 'percent' => 100, 'message' => __( 'Export finished', 'unbox-by-oobe' ), 'done' => true, 'result' => $d['result'] );
 		}
 		return array( 'percent' => 0, 'message' => '' );
 	}
@@ -313,7 +313,7 @@ class Unbox_Export {
 			list( $dir, $prefix, $rel ) = array_shift( $e['queue'] );
 			$items = @scandir( $dir );
 			if ( $items === false ) {
-				$job->log( sprintf( /* translators: %s: folder path */ __( 'Skipped an unreadable folder: %s', 'unbox' ), $dir ) );
+				$job->log( sprintf( /* translators: %s: folder path */ __( 'Skipped an unreadable folder: %s', 'unbox-by-oobe' ), $dir ) );
 				continue;
 			}
 			foreach ( $items as $f ) {
@@ -327,13 +327,13 @@ class Unbox_Export {
 				}
 				if ( is_dir( $path ) ) {
 					if ( is_link( $path ) ) {
-						$job->log( sprintf( /* translators: %s: path */ __( 'Skipped a symbolic link: %s', 'unbox' ), $r !== null ? $r : $path ) );
+						$job->log( sprintf( /* translators: %s: path */ __( 'Skipped a symbolic link: %s', 'unbox-by-oobe' ), $r !== null ? $r : $path ) );
 						continue;
 					}
 					$e['queue'][] = array( $path, $prefix . $f . '/', $r );
 				} elseif ( is_file( $path ) ) {
 					if ( ! is_readable( $path ) ) {
-						$job->log( sprintf( /* translators: %s: path */ __( 'Skipped an unreadable file: %s', 'unbox' ), $r !== null ? $r : $path ) );
+						$job->log( sprintf( /* translators: %s: path */ __( 'Skipped an unreadable file: %s', 'unbox-by-oobe' ), $r !== null ? $r : $path ) );
 						continue;
 					}
 					self::add_line( $fh, $e, $path, $prefix . $f );
@@ -418,7 +418,7 @@ class Unbox_Export {
 			} catch ( Unbox_Exception $e ) {
 				if ( ! isset( $a['state']['size'] ) && ! isset( $a['state']['offset'] ) ) {
 					// まだ何も書いていない（消えた・読めない）ファイルは飛ばす
-					$job->log( sprintf( /* translators: %1$s: file name, %2$s: reason */ __( 'Skipped: %1$s (%2$s)', 'unbox' ), $name, $e->getMessage() ) );
+					$job->log( sprintf( /* translators: %1$s: file name, %2$s: reason */ __( 'Skipped: %1$s (%2$s)', 'unbox-by-oobe' ), $name, $e->getMessage() ) );
 					$a['cur'] = null;
 					continue;
 				}
@@ -457,10 +457,10 @@ class Unbox_Export {
 		$name   = $base . '-' . wp_date( 'Ymd-His' ) . ( $is_zip ? '-localwp.zip' : '.' . $d['opt']['format'] );
 		$dest   = Unbox_Storage::unique_path( Unbox_Storage::dir( 'archives' ), $name );
 		if ( ! rename( $src, $dest ) ) {
-			throw new Unbox_Exception( __( 'Could not move the finished file', 'unbox' ) );
+			throw new Unbox_Exception( __( 'Could not move the finished file', 'unbox-by-oobe' ) );
 		}
 		$size = Unbox_Wpress_Reader::filesize( $dest );
-		$job->log( sprintf( /* translators: %1$s: file name, %2$s: size */ __( 'Done: %1$s (%2$s)', 'unbox' ), basename( $dest ), size_format( $size, 1 ) ) );
+		$job->log( sprintf( /* translators: %1$s: file name, %2$s: size */ __( 'Done: %1$s (%2$s)', 'unbox-by-oobe' ), basename( $dest ), size_format( $size, 1 ) ) );
 		$d['stage']  = 'done';
 		$d['result'] = array(
 			'id'         => 'own:' . basename( $dest ),

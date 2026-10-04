@@ -1,10 +1,10 @@
-=== Unbox ===
+=== Unbox by oobe ===
 Contributors: oobeio
 Tags: migration, backup, export, import, localwp
-Requires at least: 5.3
+Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.3.0
+Stable tag: 0.4.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -81,8 +81,13 @@ Yes, unencrypted and uncompressed `.wpress` files can be imported.
 
 == Changelog ==
 
+= 0.4.0 =
+* Renamed to "Unbox by oobe".
+* Database access now goes through wpdb. Requires WordPress 6.2 or later.
+* Translations are delivered through translate.wordpress.org.
+
 = 0.3.0 =
-* The interface is now translatable. Japanese translation included.
+* The interface is now translatable.
 
 = 0.2.0 =
 * Folders and files outside wp-content can be included in .unbox and LocalWP exports.

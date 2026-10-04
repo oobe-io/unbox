@@ -1,23 +1,22 @@
 <?php
 /**
- * Plugin Name:       Unbox
- * Description:       WordPress サイトの書き出し・取り込み（移行）。容量制限なし。.unbox 形式（.wpress 互換）と、LocalWP にそのまま取り込める zip に対応。
- * Version:           0.3.0
- * Requires at least: 5.3
+ * Plugin Name:       Unbox by oobe
+ * Description:       Move a whole WordPress site to another server or into LocalWP. No size limit. Exports .unbox (compatible with .wpress) and LocalWP-ready zip files.
+ * Version:           0.4.0
+ * Requires at least: 6.2
  * Requires PHP:      7.4
  * Author:            oobe
  * Author URI:        https://oobe-io.com/
  * License:           GPL-3.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
- * Text Domain:       unbox
- * Domain Path:       /languages
+ * Text Domain:       unbox-by-oobe
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'UNBOX_VERSION', '0.3.0' );
+define( 'UNBOX_VERSION', '0.4.0' );
 define( 'UNBOX_DIR', plugin_dir_path( __FILE__ ) );
 define( 'UNBOX_URL', plugin_dir_url( __FILE__ ) );
 define( 'UNBOX_BASENAME', plugin_basename( __FILE__ ) );
@@ -35,13 +34,6 @@ if ( is_admin() ) {
 	require_once UNBOX_DIR . 'includes/class-unbox-import.php';
 	require_once UNBOX_DIR . 'includes/class-unbox-admin.php';
 	Unbox_Admin::init();
-	add_action(
-		'init',
-		function () {
-			// phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound -- Loads the bundled Japanese translation until it is available from translate.wordpress.org.
-			load_plugin_textdomain( 'unbox', false, dirname( UNBOX_BASENAME ) . '/languages' );
-		}
-	);
 }
 
 register_deactivation_hook(

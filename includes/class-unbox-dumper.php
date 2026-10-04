@@ -14,11 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // phpcs:disable WordPress.WP.AlternativeFunctions -- WP_Filesystem has no streaming API; multi-gigabyte archives are read and written with native file handles.
 // phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as JSON and rendered as text by the admin script, never echoed as HTML.
-// phpcs:disable WordPress.DB.RestrictedFunctions -- Raw mysqli is used for unbuffered reads of large tables and for replaying SQL dumps that may contain binary data, which wpdb would reject or buffer in memory.
+// phpcs:disable WordPress.DB.DirectDatabaseQuery -- A migration has to read every table directly; caching would only waste memory.
+// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table and column names are passed to prepare() with %i; the WHERE fragments are built from prepared pieces.
 
 class Unbox_Dumper {
-	private $wpdb;
-	private $dbh;
 	private $prefix;
 	private $opt;
 	/** @var Unbox_Replacer|null */
@@ -26,33 +25,32 @@ class Unbox_Dumper {
 
 	public function __construct( array $opt, Unbox_Replacer $replacer = null ) {
 		global $wpdb;
-		$this->wpdb     = $wpdb;
-		$this->dbh      = $wpdb->dbh;
 		$this->prefix   = $wpdb->base_prefix;
 		$this->opt      = $opt;
 		$this->replacer = $replacer;
-		if ( ! ( $this->dbh instanceof mysqli ) ) {
-			throw new Unbox_Exception( __( 'Only mysqli database connections are supported', 'unbox' ) );
-		}
+		// エラーは例外にして JSON で返す。画面に HTML で出すと応答が壊れる
+		$wpdb->suppress_errors( true );
+		$wpdb->hide_errors();
 	}
 
-	private function q( $sql, $mode = MYSQLI_STORE_RESULT ) {
-		$res = mysqli_query( $this->dbh, $sql, $mode );
-		if ( $res === false ) {
-			throw new Unbox_Exception( sprintf( /* translators: %1$s: error message, %2$s: SQL */ __( 'Failed to read the database: %1$s / %2$s', 'unbox' ), mysqli_error( $this->dbh ), substr( $sql, 0, 200 ) ) );
+	/** 読み出しに失敗したら止める。 */
+	private function check() {
+		global $wpdb;
+		if ( $wpdb->last_error !== '' ) {
+			throw new Unbox_Exception( sprintf( /* translators: %1$s: error message, %2$s: SQL */ __( 'Failed to read the database: %1$s / %2$s', 'unbox-by-oobe' ), $wpdb->last_error, substr( (string) $wpdb->last_query, 0, 200 ) ) );
 		}
-		return $res;
 	}
 
 	public function tables() {
-		$res  = $this->q( "SHOW FULL TABLES WHERE Table_type = 'BASE TABLE'" );
+		global $wpdb;
+		$rows = $wpdb->get_col( "SHOW FULL TABLES WHERE Table_type = 'BASE TABLE'" );
+		$this->check();
 		$list = array();
-		while ( $row = mysqli_fetch_row( $res ) ) {
-			if ( strpos( $row[0], $this->prefix ) === 0 ) {
-				$list[] = $row[0];
+		foreach ( $rows as $name ) {
+			if ( strpos( $name, $this->prefix ) === 0 ) {
+				$list[] = $name;
 			}
 		}
-		mysqli_free_result( $res );
 		sort( $list );
 		return $list;
 	}
@@ -65,9 +63,9 @@ class Unbox_Dumper {
 	}
 
 	private function create_table( $table ) {
-		$res = $this->q( 'SHOW CREATE TABLE `' . $table . '`' );
-		$row = mysqli_fetch_row( $res );
-		mysqli_free_result( $res );
+		global $wpdb;
+		$row = $wpdb->get_row( $wpdb->prepare( 'SHOW CREATE TABLE %i', $table ), ARRAY_N );
+		$this->check();
 		$sql = $row[1];
 		$sql = preg_replace( '/^CREATE TABLE `[^`]+`/', 'CREATE TABLE `' . $this->out_name( $table ) . '`', $sql );
 		// 外部キーは並び順で失敗しやすいので外す（All-in-One WP Migration と同じ扱い）
@@ -77,41 +75,75 @@ class Unbox_Dumper {
 
 	/** 1列の整数主キーなら列名、そうでなければ null。 */
 	private function int_primary_key( $table ) {
-		$res  = $this->q( 'SHOW KEYS FROM `' . $table . "` WHERE Key_name = 'PRIMARY'" );
+		global $wpdb;
+		$keys = $wpdb->get_results( $wpdb->prepare( 'SHOW KEYS FROM %i WHERE Key_name = %s', $table, 'PRIMARY' ), ARRAY_A );
+		$this->check();
 		$cols = array();
-		while ( $row = mysqli_fetch_assoc( $res ) ) {
-			$cols[] = $row['Column_name'];
+		foreach ( $keys as $key ) {
+			$cols[] = $key['Column_name'];
 		}
-		mysqli_free_result( $res );
 		if ( count( $cols ) !== 1 ) {
 			return array( null, $cols );
 		}
-		$res  = $this->q( 'SHOW COLUMNS FROM `' . $table . '` WHERE Field = \'' . mysqli_real_escape_string( $this->dbh, $cols[0] ) . '\'' );
-		$col  = mysqli_fetch_assoc( $res );
-		mysqli_free_result( $res );
+		$col = $wpdb->get_row( $wpdb->prepare( 'SHOW COLUMNS FROM %i WHERE Field = %s', $table, $cols[0] ), ARRAY_A );
+		$this->check();
 		if ( $col && preg_match( '/int/i', $col['Type'] ) ) {
 			return array( $cols[0], $cols );
 		}
 		return array( null, $cols );
 	}
 
+	/** 書き出さない行の条件。prepare() に渡す [ 条件, 値 ] を返す。 */
 	private function where( $table ) {
+		global $wpdb;
 		$name  = substr( $table, strlen( $this->prefix ) );
 		$where = array( '1=1' );
+		$args  = array();
 		if ( $name === 'options' ) {
 			if ( ! empty( $this->opt['exclude_transients'] ) ) {
-				$where[] = "`option_name` NOT LIKE '\\_transient\\_%' AND `option_name` NOT LIKE '\\_site\\_transient\\_%'";
+				$where[] = '`option_name` NOT LIKE %s AND `option_name` NOT LIKE %s';
+				$args[]  = $wpdb->esc_like( '_transient_' ) . '%';
+				$args[]  = $wpdb->esc_like( '_site_transient_' ) . '%';
 			}
 			// URL の対応表は移行先で作り直させる（古い表が残ると個別ページが 404 になる）
-			$where[] = "`option_name` NOT IN ('unbox_secret', 'rewrite_rules')";
+			$where[] = '`option_name` NOT IN (%s, %s)';
+			$args[]  = 'unbox_secret';
+			$args[]  = 'rewrite_rules';
 		}
 		if ( $name === 'posts' && ! empty( $this->opt['exclude_revisions'] ) ) {
-			$where[] = "`post_type` <> 'revision'";
+			$where[] = '`post_type` <> %s';
+			$args[]  = 'revision';
 		}
 		if ( $name === 'comments' && ! empty( $this->opt['exclude_spam'] ) ) {
-			$where[] = "`comment_approved` <> 'spam'";
+			$where[] = '`comment_approved` <> %s';
+			$args[]  = 'spam';
 		}
-		return implode( ' AND ', $where );
+		return array( implode( ' AND ', $where ), $args );
+	}
+
+	/** 次の 1000 行を読む SQL。 */
+	private function select( $table, $pk, array $pk_cols, array $state ) {
+		global $wpdb;
+		list( $where, $args ) = $this->where( $table );
+		if ( $pk ) {
+			if ( $state['last'] !== null ) {
+				$where .= ' AND %i > %d';
+				$args[] = $pk;
+				$args[] = (int) $state['last'];
+			}
+			$args[] = $pk;
+			// phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber -- The number of placeholders in $where varies; $args always matches it.
+			return $wpdb->prepare( "SELECT * FROM %i WHERE $where ORDER BY %i LIMIT 1000", array_merge( array( $table ), $args ) );
+		}
+		if ( $pk_cols ) {
+			$order = implode( ', ', array_fill( 0, count( $pk_cols ), '%i' ) );
+			$args  = array_merge( $args, $pk_cols );
+		} else {
+			$order = '1';
+		}
+		$args[] = (int) $state['offset'];
+		// phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber -- The number of placeholders in $where and $order varies; $args always matches them.
+		return $wpdb->prepare( "SELECT * FROM %i WHERE $where ORDER BY $order LIMIT %d, 1000", array_merge( array( $table ), $args ) );
 	}
 
 	/**
@@ -121,6 +153,7 @@ class Unbox_Dumper {
 	 * @return bool 全テーブル書き終えたら true
 	 */
 	public function step( array &$state, $file, $deadline ) {
+		global $wpdb;
 		$state += array( 'i' => 0, 'last' => null, 'offset' => 0, 'ddl' => false, 'tables' => null, 'rows' => 0 );
 		if ( $state['tables'] === null ) {
 			$state['tables'] = $this->tables();
@@ -132,10 +165,10 @@ class Unbox_Dumper {
 		}
 		$fh = fopen( $file, 'ab' );
 		if ( ! $fh ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot write the SQL file: %s', 'unbox' ), $file ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot write the SQL file: %s', 'unbox-by-oobe' ), $file ) );
 		}
-		$this->q( "SET SESSION sql_mode = ''" );
-		@mysqli_set_charset( $this->dbh, 'utf8mb4' );
+		$wpdb->query( "SET SESSION sql_mode = ''" );
+		$wpdb->set_charset( $wpdb->dbh, 'utf8mb4' );
 
 		while ( $state['i'] < count( $state['tables'] ) ) {
 			$table = $state['tables'][ $state['i'] ];
@@ -145,28 +178,23 @@ class Unbox_Dumper {
 				$state['ddl'] = true;
 			}
 			list( $pk, $pk_cols ) = $this->int_primary_key( $table );
-			$where = $this->where( $table );
-			if ( $pk ) {
-				$cond = $state['last'] === null ? '' : ' AND `' . $pk . '` > ' . (int) $state['last'];
-				$sql  = "SELECT * FROM `$table` WHERE $where$cond ORDER BY `$pk` LIMIT 1000";
-			} else {
-				$order = $pk_cols ? implode( ', ', array_map( function ( $c ) { return '`' . $c . '`'; }, $pk_cols ) ) : '1';
-				$sql   = "SELECT * FROM `$table` WHERE $where ORDER BY $order LIMIT " . (int) $state['offset'] . ', 1000';
-			}
-			$res    = $this->q( $sql, MYSQLI_USE_RESULT );
-			$fields = mysqli_fetch_fields( $res );
+			$sql  = $this->select( $table, $pk, $pk_cols, $state );
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $sql comes from select(), which builds it with $wpdb->prepare().
+			$rows = $wpdb->get_results( $sql, ARRAY_N );
+			$this->check();
+			$fields = $this->fields();
 			$binary = array();
 			$pk_idx = null;
 			foreach ( $fields as $idx => $f ) {
-				$binary[ $idx ] = ( $f->charsetnr === 63 && in_array( $f->type, array( MYSQLI_TYPE_TINY_BLOB, MYSQLI_TYPE_MEDIUM_BLOB, MYSQLI_TYPE_LONG_BLOB, MYSQLI_TYPE_BLOB, MYSQLI_TYPE_STRING, MYSQLI_TYPE_VAR_STRING ), true ) );
-				if ( $pk !== null && $f->name === $pk ) {
+				$binary[ $idx ] = ( (int) $f['charsetnr'] === 63 && in_array( (int) $f['type'], array( MYSQLI_TYPE_TINY_BLOB, MYSQLI_TYPE_MEDIUM_BLOB, MYSQLI_TYPE_LONG_BLOB, MYSQLI_TYPE_BLOB, MYSQLI_TYPE_STRING, MYSQLI_TYPE_VAR_STRING ), true ) );
+				if ( $pk !== null && $f['name'] === $pk ) {
 					$pk_idx = $idx;
 				}
 			}
 			$prefix_col = $this->prefix_column( $table, $fields );
 			$count      = 0;
 			$buf        = '';
-			while ( $row = mysqli_fetch_row( $res ) ) {
+			foreach ( $rows as $row ) {
 				$vals = array();
 				foreach ( $row as $idx => $v ) {
 					if ( $v === null ) {
@@ -179,7 +207,7 @@ class Unbox_Dumper {
 						} elseif ( $this->replacer ) {
 							$v = $this->replacer->replace( $v );
 						}
-						$vals[] = "'" . mysqli_real_escape_string( $this->dbh, $v ) . "'";
+						$vals[] = "'" . Unbox_Sql::escape( $v ) . "'";
 					}
 				}
 				$tuple = '(' . implode( ',', $vals ) . ')';
@@ -197,7 +225,8 @@ class Unbox_Dumper {
 				}
 				$count++;
 			}
-			mysqli_free_result( $res );
+			$rows = null;
+			$wpdb->flush();
 			if ( $buf !== '' ) {
 				fwrite( $fh, $buf . ";\n" );
 			}
@@ -218,6 +247,23 @@ class Unbox_Dumper {
 		return $state['i'] >= count( $state['tables'] );
 	}
 
+	/** 直前に読んだ結果の列（名前・型・文字コード）。 */
+	private function fields() {
+		global $wpdb;
+		$names    = (array) $wpdb->get_col_info( 'name', -1 );
+		$types    = (array) $wpdb->get_col_info( 'type', -1 );
+		$charsets = (array) $wpdb->get_col_info( 'charsetnr', -1 );
+		$fields   = array();
+		foreach ( $names as $idx => $name ) {
+			$fields[ $idx ] = array(
+				'name'      => $name,
+				'type'      => isset( $types[ $idx ] ) ? $types[ $idx ] : 0,
+				'charsetnr' => isset( $charsets[ $idx ] ) ? $charsets[ $idx ] : 0,
+			);
+		}
+		return $fields;
+	}
+
 	/** 値に接頭辞が入る列（options.option_name / usermeta.meta_key）の位置。 */
 	private function prefix_column( $table, array $fields ) {
 		$name = substr( $table, strlen( $this->prefix ) );
@@ -226,7 +272,7 @@ class Unbox_Dumper {
 			return null;
 		}
 		foreach ( $fields as $idx => $f ) {
-			if ( $f->name === $col ) {
+			if ( $f['name'] === $col ) {
 				return $idx;
 			}
 		}

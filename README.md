@@ -1,4 +1,4 @@
-# Unbox
+# Unbox by oobe
 
 Move a whole WordPress site to another server or into LocalWP. No size limit, no account, nothing sent anywhere.
 
@@ -14,7 +14,7 @@ WordPress サイトを丸ごと書き出して、別のサーバーや LocalWP �
 - **Folders outside wp-content / wp-content の外のフォルダー**：WordPress のフォルダー直下にある静的ページなどのフォルダーも、選んで一緒に運べます（.unbox と LocalWP 用 zip）。
 - **.wpress compatible / .wpress 互換**：All-in-One WP Migration の `.wpress` を取り込めます。`.wpress` で書き出すこともできます。
 
-Requirements / 動作環境: WordPress 5.3+, PHP 7.4+, single site（マルチサイトは未対応）
+Requirements / 動作環境: WordPress 6.2+, PHP 7.4+, single site（マルチサイトは未対応）
 
 ## Usage / 使い方
 

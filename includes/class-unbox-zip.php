@@ -32,7 +32,7 @@ class Unbox_Zip_Writer {
 		$this->cd_path = $cd_path;
 		$this->fh      = @fopen( $path, 'c+b' );
 		if ( ! $this->fh ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot write the zip: %s', 'unbox' ), $path ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot write the zip: %s', 'unbox-by-oobe' ), $path ) );
 		}
 		if ( $resume_size !== null ) {
 			ftruncate( $this->fh, $resume_size );
@@ -68,7 +68,7 @@ class Unbox_Zip_Writer {
 
 	private function write( $data ) {
 		if ( fwrite( $this->fh, $data ) !== strlen( $data ) ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Failed to write (the disk may be full): %s', 'unbox' ), $this->path ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Failed to write (the disk may be full): %s', 'unbox-by-oobe' ), $this->path ) );
 		}
 	}
 
@@ -111,7 +111,7 @@ class Unbox_Zip_Writer {
 		$this->write( pack( 'V', $state['crc'] ) );
 		fseek( $this->fh, $end );
 		if ( file_put_contents( $this->cd_path, json_encode( $state ) . "\n", FILE_APPEND ) === false ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot write a working file: %s', 'unbox' ), $this->cd_path ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot write a working file: %s', 'unbox-by-oobe' ), $this->cd_path ) );
 		}
 	}
 
@@ -132,7 +132,7 @@ class Unbox_Zip_Writer {
 		// ヘッダーを書く前に開けるか確かめる
 		$in = @fopen( $src, 'rb' );
 		if ( ! $in ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot read the file: %s', 'unbox' ), $src ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot read the file: %s', 'unbox-by-oobe' ), $src ) );
 		}
 		if ( ! isset( $state['offset'] ) ) {
 			$stat  = fstat( $in );
@@ -167,7 +167,7 @@ class Unbox_Zip_Writer {
 			$state['written'] += strlen( $chunk );
 		}
 		if ( $state['written'] !== $state['size'] ) {
-			throw new Unbox_Exception( sprintf( /* translators: %s: file name */ __( 'Size mismatch: %s', 'unbox' ), $name ) );
+			throw new Unbox_Exception( sprintf( /* translators: %s: file name */ __( 'Size mismatch: %s', 'unbox-by-oobe' ), $name ) );
 		}
 		$this->end_entry( $state );
 	}
