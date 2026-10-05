@@ -40,7 +40,7 @@ php cli/unbox-cli.php localwp site.unbox site-name [output.zip]
 
 - `.unbox` uses the same container format as `.wpress`: a 4377-byte header (name 255 / size 14 / mtime 12 / path 4096) before each file, ending with a 4377-byte NUL block. The database is `database.sql`, with the table prefix replaced by `SERVMASK_PREFIX_`. Files outside wp-content are stored under `__root__/`.
 - Each request runs for up to 20 seconds (or half of `max_execution_time`) and can stop and resume in the middle of a file or SQL dump. Zip CRCs are carried across requests with `crc32_combine`.
-- During an import, only Unbox's own requests run without other plugins and the theme (a temporary mu-plugin), so a half-migrated site cannot break the migration itself.
+- Imported files are written under a temporary name (`.unbox-part`) and renamed when complete, so a half-written file is never loaded by the next request.
 
 ## Hooks / フック
 

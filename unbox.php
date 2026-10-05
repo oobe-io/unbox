@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Unbox by oobe
  * Description:       Move a whole WordPress site to another server or into LocalWP. No size limit. Exports .unbox (compatible with .wpress) and LocalWP-ready zip files.
- * Version:           0.4.0
+ * Version:           0.4.1
  * Requires at least: 6.2
  * Requires PHP:      7.4
  * Author:            oobe
@@ -16,33 +16,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'UNBOX_VERSION', '0.4.0' );
+define( 'UNBOX_VERSION', '0.4.1' );
 define( 'UNBOX_DIR', plugin_dir_path( __FILE__ ) );
 define( 'UNBOX_URL', plugin_dir_url( __FILE__ ) );
 define( 'UNBOX_BASENAME', plugin_basename( __FILE__ ) );
 
 // 表のページでは何も読み込まない。管理画面（移行処理の admin-ajax も含む）でだけ動く。
 if ( is_admin() ) {
+	require_once UNBOX_DIR . 'includes/class-unbox-paths.php';
 	require_once UNBOX_DIR . 'includes/class-unbox-wpress.php';
 	require_once UNBOX_DIR . 'includes/class-unbox-zip.php';
 	require_once UNBOX_DIR . 'includes/class-unbox-replacer.php';
 	require_once UNBOX_DIR . 'includes/class-unbox-sql.php';
 	require_once UNBOX_DIR . 'includes/class-unbox-storage.php';
-	require_once UNBOX_DIR . 'includes/class-unbox-guard.php';
 	require_once UNBOX_DIR . 'includes/class-unbox-dumper.php';
 	require_once UNBOX_DIR . 'includes/class-unbox-export.php';
 	require_once UNBOX_DIR . 'includes/class-unbox-import.php';
 	require_once UNBOX_DIR . 'includes/class-unbox-admin.php';
 	Unbox_Admin::init();
 }
-
-register_deactivation_hook(
-	__FILE__,
-	function () {
-		require_once UNBOX_DIR . 'includes/class-unbox-guard.php';
-		Unbox_Guard::remove();
-	}
-);
 
 /**
  * 拡張（将来の有料版など）はここに処理を足す。

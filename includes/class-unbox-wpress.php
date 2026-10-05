@@ -71,6 +71,9 @@ class Unbox_Wpress {
 }
 
 class Unbox_Wpress_Reader {
+	/** 書きかけのファイルに付ける名前 */
+	const PART_SUFFIX = '.unbox-part';
+
 	private $path;
 	private $fh;
 	private $size;
@@ -159,11 +162,13 @@ class Unbox_Wpress_Reader {
 	 * @return bool 書き終えたら true
 	 */
 	public function extract_to( array $entry, $dest, &$written, $deadline = 0 ) {
-		$dir = dirname( $dest );
+		// 書きかけのファイルが読み込まれないよう、別名で書き切ってから本来の名前に付け替える
+		$part = $dest . self::PART_SUFFIX;
+		$dir  = dirname( $dest );
 		if ( ! is_dir( $dir ) && ! @mkdir( $dir, 0755, true ) && ! is_dir( $dir ) ) {
 			throw new Unbox_Exception( sprintf( /* translators: %s: folder path */ __( 'Cannot create the folder: %s', 'unbox-by-oobe' ), $dir ) );
 		}
-		$out = @fopen( $dest, $written > 0 ? 'cb' : 'wb' );
+		$out = @fopen( $part, $written > 0 ? 'cb' : 'wb' );
 		if ( ! $out ) {
 			throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot write the file: %s', 'unbox-by-oobe' ), $dest ) );
 		}
@@ -190,7 +195,14 @@ class Unbox_Wpress_Reader {
 		}
 		fclose( $out );
 		if ( $entry['mtime'] > 0 ) {
-			@touch( $dest, $entry['mtime'] );
+			@touch( $part, $entry['mtime'] );
+		}
+		if ( ! @rename( $part, $dest ) ) {
+			// 置き換え先を消してからでないと付け替えられない環境（Windows）向け
+			@unlink( $dest );
+			if ( ! @rename( $part, $dest ) ) {
+				throw new Unbox_Exception( sprintf( /* translators: %s: file path */ __( 'Cannot write the file: %s', 'unbox-by-oobe' ), $dest ) );
+			}
 		}
 		return true;
 	}

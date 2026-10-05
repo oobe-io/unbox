@@ -4,7 +4,7 @@ Tags: migration, backup, export, import, localwp
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.4.0
+Stable tag: 0.4.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -80,6 +80,10 @@ Yes, unencrypted and uncompressed `.wpress` files can be imported.
 4. Import: check the source site and the destination URL before anything is overwritten.
 
 == Changelog ==
+
+= 0.4.1 =
+* No longer writes a file to mu-plugins during a migration. Imported files are written under a temporary name and renamed when complete, so a half-written file is never loaded.
+* Folder locations are resolved in one place.
 
 = 0.4.0 =
 * Renamed to "Unbox by oobe".

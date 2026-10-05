@@ -37,7 +37,7 @@ class Unbox_Storage {
 	}
 
 	public static function dir( $sub = '' ) {
-		$dir = WP_CONTENT_DIR . '/' . self::dirname();
+		$dir = Unbox_Paths::content_dir() . '/' . self::dirname();
 		return $sub === '' ? $dir : $dir . '/' . $sub;
 	}
 
@@ -69,7 +69,7 @@ class Unbox_Storage {
 		$list    = array();
 		$sources = array(
 			'own'   => self::dir( 'archives' ),
-			'ai1wm' => WP_CONTENT_DIR . '/ai1wm-backups',
+			'ai1wm' => Unbox_Paths::content_dir() . '/ai1wm-backups',
 		);
 		foreach ( $sources as $src => $dir ) {
 			if ( ! is_dir( $dir ) ) {
@@ -104,7 +104,7 @@ class Unbox_Storage {
 		if ( ! preg_match( '/^(own|ai1wm):([A-Za-z0-9._\-]+\.(unbox|wpress|zip))$/i', (string) $id, $m ) ) {
 			throw new Unbox_Exception( __( 'Invalid file', 'unbox-by-oobe' ) );
 		}
-		$dir  = $m[1] === 'own' ? self::dir( 'archives' ) : WP_CONTENT_DIR . '/ai1wm-backups';
+		$dir  = $m[1] === 'own' ? self::dir( 'archives' ) : Unbox_Paths::content_dir() . '/ai1wm-backups';
 		$path = $dir . '/' . $m[2];
 		if ( ! is_file( $path ) ) {
 			throw new Unbox_Exception( sprintf( /* translators: %s: file name */ __( 'File not found: %s', 'unbox-by-oobe' ), $m[2] ) );

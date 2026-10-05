@@ -83,8 +83,8 @@ class Unbox_Export {
 
 	/** wp-content の外の候補（WordPress のフォルダー直下にある、本体以外のフォルダー・ファイル）。 */
 	public static function root_candidates() {
-		$root    = untrailingslashit( ABSPATH );
-		$content = dirname( WP_CONTENT_DIR ) === $root ? basename( WP_CONTENT_DIR ) : 'wp-content';
+		$root    = Unbox_Paths::site_root();
+		$content = Unbox_Paths::content_name();
 		$list    = array();
 		foreach ( (array) @scandir( $root ) as $name ) {
 			if ( ! Unbox_Wpress::is_movable_root( $name, $content ) || is_link( "$root/$name" ) ) {
@@ -126,7 +126,6 @@ class Unbox_Export {
 		);
 		$job->log( sprintf( /* translators: %s: format name */ __( 'Started exporting (format: %s)', 'unbox-by-oobe' ), self::format_label( $opt['format'] ) ) );
 		$job->save();
-		Unbox_Guard::install();
 		return $job;
 	}
 
@@ -211,7 +210,7 @@ class Unbox_Export {
 	}
 
 	/**
-	 * 有効なプラグイン。移行処理のリクエストでは Unbox_Guard が get_option を差し替えているので、DB から直接読む。
+	 * 有効なプラグイン。ほかのプラグインのフィルターを通さず、DB に入っている値をそのまま読む。
 	 */
 	public static function active_plugins() {
 		global $wpdb;
@@ -228,7 +227,6 @@ class Unbox_Export {
 			Unbox_Storage::dirname(),
 			'ai1wm-backups',
 			'plugins/all-in-one-wp-migration/storage',
-			'mu-plugins/' . Unbox_Guard::FILE,
 			'upgrade',
 			'upgrade-temp-backup',
 			'updraft',
@@ -249,7 +247,7 @@ class Unbox_Export {
 			foreach ( $active as $p ) {
 				$keep[ strpos( $p, '/' ) === false ? $p : dirname( $p ) ] = true;
 			}
-			foreach ( (array) @scandir( WP_PLUGIN_DIR ) as $f ) {
+			foreach ( (array) @scandir( Unbox_Paths::plugins_dir() ) as $f ) {
 				if ( $f === '.' || $f === '..' || $f === 'index.php' || isset( $keep[ $f ] ) ) {
 					continue;
 				}
@@ -276,13 +274,13 @@ class Unbox_Export {
 			$queue   = array();
 			if ( $d['opt']['format'] === 'localwp' ) {
 				if ( $d['opt']['include_core'] ) {
-					$queue[] = array( untrailingslashit( ABSPATH ) . '/wp-admin', 'files/wp-admin/', null );
-					$queue[] = array( untrailingslashit( ABSPATH ) . '/wp-includes', 'files/wp-includes/', null );
+					$queue[] = array( Unbox_Paths::site_root() . '/wp-admin', 'files/wp-admin/', null );
+					$queue[] = array( Unbox_Paths::site_root() . '/wp-includes', 'files/wp-includes/', null );
 				}
 			} else {
 				$content = '';
 			}
-			$queue[] = array( WP_CONTENT_DIR, $content, '' );
+			$queue[] = array( Unbox_Paths::content_dir(), $content, '' );
 			$d['enum'] = array( 'queue' => $queue, 'count' => 0, 'bytes' => 0, 'roots' => false );
 		}
 		$e  = &$d['enum'];
@@ -291,7 +289,7 @@ class Unbox_Export {
 		if ( ! $e['roots'] ) {
 			if ( $d['opt']['format'] === 'localwp' && $d['opt']['include_core'] ) {
 				foreach ( self::CORE_FILES as $f ) {
-					$p = untrailingslashit( ABSPATH ) . '/' . $f;
+					$p = Unbox_Paths::site_root() . '/' . $f;
 					if ( is_file( $p ) ) {
 						self::add_line( $fh, $e, $p, 'files/' . $f );
 					}
@@ -300,7 +298,7 @@ class Unbox_Export {
 			// wp-content の外（WordPress のフォルダー直下）で選ばれたもの
 			$prefix = $d['opt']['format'] === 'localwp' ? 'files/' : Unbox_Wpress::ROOT_PREFIX;
 			foreach ( $d['opt']['root_items'] as $name ) {
-				$p = untrailingslashit( ABSPATH ) . '/' . $name;
+				$p = Unbox_Paths::site_root() . '/' . $name;
 				if ( is_dir( $p ) ) {
 					$e['queue'][] = array( $p, $prefix . $name . '/', null );
 				} elseif ( is_file( $p ) ) {
@@ -317,8 +315,8 @@ class Unbox_Export {
 				continue;
 			}
 			foreach ( $items as $f ) {
-				if ( $f === '.' || $f === '..' ) {
-					continue;
+				if ( $f === '.' || $f === '..' || substr( $f, -strlen( Unbox_Wpress_Reader::PART_SUFFIX ) ) === Unbox_Wpress_Reader::PART_SUFFIX ) {
+					continue; // 取り込みの途中で残った書きかけのファイル
 				}
 				$path = $dir . '/' . $f;
 				$r    = $rel === null ? null : ( $rel === '' ? $f : $rel . '/' . $f );
@@ -361,7 +359,7 @@ class Unbox_Export {
 		return wp_json_encode(
 			self::url_package( $d ) + array(
 				'Plugin'    => array( 'Version' => UNBOX_VERSION ),
-				'WordPress' => array( 'Version' => $wp_version, 'Content' => WP_CONTENT_DIR ),
+				'WordPress' => array( 'Version' => $wp_version, 'Content' => Unbox_Paths::content_dir() ),
 				'Database'  => array( 'Version' => $wpdb->db_version(), 'Prefix' => $wpdb->base_prefix ),
 				'PHP'       => array( 'Version' => PHP_VERSION ),
 				'Plugins'   => array_values( self::active_plugins() ),
@@ -472,6 +470,5 @@ class Unbox_Export {
 		foreach ( array( 'database.sql', 'files.jsonl', 'central.jsonl' ) as $f ) {
 			@unlink( $job->dir( $f ) );
 		}
-		Unbox_Guard::remove_if_idle( $job->id );
 	}
 }

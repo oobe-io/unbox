@@ -184,16 +184,26 @@ class Unbox_Import {
 		$d['sql']       = array( 'offset' => 0, 'count' => 0, 'errors' => array(), 'error_count' => 0, 'refused' => 0, 'started' => false );
 		$d['stage']     = 'files';
 		$job->log( sprintf( /* translators: %s: URL */ __( 'Started importing (destination %s)', 'unbox-by-oobe' ), $target ) );
-		Unbox_Guard::install();
+	}
+
+	/** 取り込みをやめたとき、書きかけのファイルを消す。 */
+	public static function discard_partial( array $d ) {
+		if ( empty( $d['ext']['cur']['name'] ) ) {
+			return;
+		}
+		$dest = self::destination( $d['ext']['cur']['name'], self::skip_prefixes() );
+		if ( $dest !== null && is_file( $dest . Unbox_Wpress_Reader::PART_SUFFIX ) ) {
+			wp_delete_file( $dest . Unbox_Wpress_Reader::PART_SUFFIX );
+		}
 	}
 
 	/** 置き換える組（移行元 → 移行先）。長いものから順に。 */
 	private static function pairs( array $pkg, $target ) {
 		$pairs = Unbox_Replacer::package_pairs( $pkg, $target );
-		if ( ! empty( $pkg['WordPress']['Content'] ) && $pkg['WordPress']['Content'] !== WP_CONTENT_DIR ) {
+		if ( ! empty( $pkg['WordPress']['Content'] ) && $pkg['WordPress']['Content'] !== Unbox_Paths::content_dir() ) {
 			$old_dir                                         = untrailingslashit( $pkg['WordPress']['Content'] );
-			$pairs[ $old_dir ]                               = WP_CONTENT_DIR;
-			$pairs[ str_replace( '/', '\\/', $old_dir ) ]    = str_replace( '/', '\\/', WP_CONTENT_DIR );
+			$pairs[ $old_dir ]                               = Unbox_Paths::content_dir();
+			$pairs[ str_replace( '/', '\\/', $old_dir ) ]    = str_replace( '/', '\\/', Unbox_Paths::content_dir() );
 		}
 		uksort(
 			$pairs,
@@ -213,7 +223,6 @@ class Unbox_Import {
 			array(
 				'plugins/' . dirname( UNBOX_BASENAME ) . '/',
 				Unbox_Storage::dirname() . '/',
-				'mu-plugins/' . Unbox_Guard::FILE,
 				'plugins/all-in-one-wp-migration/storage/',
 				'ai1wm-backups/',
 			)
@@ -258,8 +267,7 @@ class Unbox_Import {
 
 	/** アーカイブに入っている WordPress の外のもの（$movable=false なら、置かずに飛ばすもの）。 */
 	private static function root_names( array $d, $movable ) {
-		$root    = untrailingslashit( ABSPATH );
-		$content = dirname( WP_CONTENT_DIR ) === $root ? basename( WP_CONTENT_DIR ) : 'wp-content';
+		$content = Unbox_Paths::content_name();
 		$out     = array();
 		foreach ( array_keys( isset( $d['scan']['roots'] ) ? $d['scan']['roots'] : array() ) as $name ) {
 			if ( Unbox_Wpress::is_movable_root( $name, $content ) === $movable ) {
@@ -280,8 +288,8 @@ class Unbox_Import {
 		}
 		if ( strpos( $name, Unbox_Wpress::ROOT_PREFIX ) === 0 ) {
 			$rel     = substr( $name, strlen( Unbox_Wpress::ROOT_PREFIX ) );
-			$root    = untrailingslashit( ABSPATH );
-			$content = dirname( WP_CONTENT_DIR ) === $root ? basename( WP_CONTENT_DIR ) : 'wp-content';
+			$root    = Unbox_Paths::site_root();
+			$content = Unbox_Paths::content_name();
 			if ( $rel === '' || ! Unbox_Wpress::is_movable_root( explode( '/', $rel )[0], $content ) ) {
 				return null;
 			}
@@ -292,7 +300,7 @@ class Unbox_Import {
 				return null;
 			}
 		}
-		return WP_CONTENT_DIR . '/' . $name;
+		return Unbox_Paths::content_dir() . '/' . $name;
 	}
 
 	private static function db_extract( Unbox_Job $job, $deadline ) {
@@ -480,7 +488,6 @@ class Unbox_Import {
 			@unlink( $d['archive'] );
 		}
 		$job->destroy();
-		Unbox_Guard::remove_if_idle();
 		return array( 'percent' => 100, 'message' => __( 'Import finished', 'unbox-by-oobe' ), 'done' => true, 'result' => $result );
 	}
 

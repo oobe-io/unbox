@@ -152,7 +152,6 @@ class Unbox_Admin {
 				@unlink( "$up/$f" );
 			}
 		}
-		Unbox_Guard::remove_if_idle();
 	}
 
 	// ---------------------------------------------------------------- 共通
@@ -294,17 +293,16 @@ class Unbox_Admin {
 				global $wpdb;
 				$like = str_replace( '_', '\\_', $d['tmp'] ) . '%';
 				foreach ( (array) $wpdb->get_col( $wpdb->prepare( 'SHOW TABLES LIKE %s', $like ) ) as $t ) {
-					if ( preg_match( '/^[A-Za-z0-9_]+$/', $t ) ) {
-						// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- A table name from SHOW TABLES, checked against [A-Za-z0-9_] above.
-						$wpdb->query( "DROP TABLE IF EXISTS `$t`" );
-					}
+					$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $t ) );
 				}
 			}
 			if ( $d['type'] === 'import' && ! empty( $d['uploaded'] ) && self::post( 'keep' ) !== '1' ) {
 				@unlink( $d['archive'] );
 			}
+			if ( $d['type'] === 'import' ) {
+				Unbox_Import::discard_partial( $d );
+			}
 			$job->destroy();
-			Unbox_Guard::remove_if_idle();
 			wp_send_json_success();
 		} catch ( Exception $e ) {
 			self::fail( $e );
