@@ -1,750 +1,745 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the Unbox package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# Copyright (C) 2026 oobe
+# This file is distributed under the GPL-3.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Unbox 0.3.0\n"
-"Report-Msgid-Bugs-To: https://github.com/oobe-io/unbox/issues\n"
-"POT-Creation-Date: 2026-10-02 16:52+0900\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Project-Id-Version: Unbox by oobe 0.4.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/unbox-by-oobe\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-08T23:41:23+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: unbox-by-oobe\n"
 
-#: includes/class-unbox-admin.php:27
+#. Plugin Name of the plugin
+#: unbox.php
+msgid "Unbox by oobe"
+msgstr ""
+
+#. Description of the plugin
+#: unbox.php
+msgid "Move a whole WordPress site to another server or into LocalWP. No size limit. Exports .unbox (compatible with .wpress) and LocalWP-ready zip files."
+msgstr ""
+
+#. Author of the plugin
+#: unbox.php
+msgid "oobe"
+msgstr ""
+
+#. Author URI of the plugin
+#: unbox.php
+msgid "https://oobe-io.com/"
+msgstr ""
+
+#: includes/class-unbox-admin.php:35
 msgid "Open"
 msgstr ""
 
 #. translators: placeholders are filled in by the admin screen script
-#: includes/class-unbox-admin.php:53
+#: includes/class-unbox-admin.php:61
 #, php-format
 msgid "Unexpected server response (HTTP %s). "
 msgstr ""
 
-#: includes/class-unbox-admin.php:54
+#: includes/class-unbox-admin.php:62
 msgid "An error occurred"
 msgstr ""
 
-#: includes/class-unbox-admin.php:55
+#: includes/class-unbox-admin.php:63
 msgid "Cannot reach the server"
 msgstr ""
 
 #. translators: placeholders are filled in by the admin screen script
-#: includes/class-unbox-admin.php:57
+#: includes/class-unbox-admin.php:65
 #, php-format
 msgid "Retrying (%1$s/%2$s)"
 msgstr ""
 
-#: includes/class-unbox-admin.php:58
+#: includes/class-unbox-admin.php:66
 msgid "Close"
 msgstr ""
 
-#: includes/class-unbox-admin.php:59
+#: includes/class-unbox-admin.php:67
 msgid "Cancel"
 msgstr ""
 
-#: includes/class-unbox-admin.php:60
-msgid ""
-"Cancel? (During an import, files already extracted are not reverted. The "
-"database has not been swapped yet.)"
+#: includes/class-unbox-admin.php:68
+msgid "Cancel? (During an import, files already extracted are not reverted. The database has not been swapped yet.)"
 msgstr ""
 
-#: includes/class-unbox-admin.php:61 views/page.php:16
+#: includes/class-unbox-admin.php:69
+#: views/page.php:16
 msgid "Export"
 msgstr ""
 
-#: includes/class-unbox-admin.php:62
+#: includes/class-unbox-admin.php:70
 msgid "Preparing"
 msgstr ""
 
 #. translators: placeholders are filled in by the admin screen script
-#: includes/class-unbox-admin.php:64
+#: includes/class-unbox-admin.php:72
 #, php-format
 msgid "Export finished: %1$s (%2$s)"
 msgstr ""
 
-#: includes/class-unbox-admin.php:65
+#: includes/class-unbox-admin.php:73
 msgid "Download the zip"
 msgstr ""
 
-#: includes/class-unbox-admin.php:66
-msgid ""
-"In LocalWP, click \"+\" at the bottom left, then \"Import an existing "
-"site\", and choose the zip (or drag it in)"
+#: includes/class-unbox-admin.php:74
+msgid "In LocalWP, click \"+\" at the bottom left, then \"Import an existing site\", and choose the zip (or drag it in)"
 msgstr ""
 
-#: includes/class-unbox-admin.php:67
-msgid ""
-"Any site name is fine (URLs are replaced to match the name LocalWP gives)"
+#: includes/class-unbox-admin.php:75
+msgid "Any site name is fine (URLs are replaced to match the name LocalWP gives)"
 msgstr ""
 
-#: includes/class-unbox-admin.php:68
+#: includes/class-unbox-admin.php:76
 msgid "Download"
 msgstr ""
 
-#: includes/class-unbox-admin.php:69
+#: includes/class-unbox-admin.php:77
 msgid "Choose a .unbox or .wpress file (LocalWP zips are imported in LocalWP)"
 msgstr ""
 
 #. translators: placeholders are filled in by the admin screen script
-#: includes/class-unbox-admin.php:71
+#: includes/class-unbox-admin.php:79
 #, php-format
 msgid "Uploading (%1$s / %2$s)"
 msgstr ""
 
 #. translators: placeholders are filled in by the admin screen script
-#: includes/class-unbox-admin.php:73
+#: includes/class-unbox-admin.php:81
 #, php-format
 msgid "%s/s"
 msgstr ""
 
 #. translators: placeholders are filled in by the admin screen script
-#: includes/class-unbox-admin.php:75
+#: includes/class-unbox-admin.php:83
 #, php-format
 msgid "Resending in %s chunks to fit the server limit"
 msgstr ""
 
-#: includes/class-unbox-admin.php:76
+#: includes/class-unbox-admin.php:84
 msgid "Checking the contents"
 msgstr ""
 
 #. translators: placeholders are filled in by the admin screen script
-#: includes/class-unbox-admin.php:78
+#: includes/class-unbox-admin.php:86
 #, php-format
-msgid ""
-"The source site runs PHP %1$s and this server runs PHP %2$s (different major "
-"versions). Some plugins or themes may not work."
+msgid "The source site runs PHP %1$s and this server runs PHP %2$s (different major versions). Some plugins or themes may not work."
 msgstr ""
 
-#: includes/class-unbox-admin.php:79
+#: includes/class-unbox-admin.php:87
 msgid "This archive contains no database."
 msgstr ""
 
-#: includes/class-unbox-admin.php:80 views/page.php:129 cli/unbox-cli.php:138
+#: includes/class-unbox-admin.php:88
+#: views/page.php:129
 msgid "File"
 msgstr ""
 
 #. translators: placeholders are filled in by the admin screen script
-#: includes/class-unbox-admin.php:82
+#: includes/class-unbox-admin.php:90
 #, php-format
 msgid "(%1$s, %2$s files)"
 msgstr ""
 
-#: includes/class-unbox-admin.php:83 cli/unbox-cli.php:140
+#: includes/class-unbox-admin.php:91
 msgid "Source site"
 msgstr ""
 
 #. translators: placeholders are filled in by the admin screen script
-#: includes/class-unbox-admin.php:85
+#: includes/class-unbox-admin.php:93
 #, php-format
 msgid "(this server: %1$s / %2$s)"
 msgstr ""
 
-#: includes/class-unbox-admin.php:86 cli/unbox-cli.php:147
+#: includes/class-unbox-admin.php:94
 msgid "Theme"
 msgstr ""
 
 #. translators: placeholders are filled in by the admin screen script
-#: includes/class-unbox-admin.php:88
+#: includes/class-unbox-admin.php:96
 #, php-format
 msgid "(%s active plugins)"
 msgstr ""
 
-#: includes/class-unbox-admin.php:89 cli/unbox-cli.php:156
+#: includes/class-unbox-admin.php:97
 msgid "Outside WordPress"
 msgstr ""
 
-#: includes/class-unbox-admin.php:90
-msgid ""
-"(placed directly in this site's WordPress folder; items with the same name "
-"are overwritten)"
+#: includes/class-unbox-admin.php:98
+msgid "(placed directly in this site's WordPress folder; items with the same name are overwritten)"
 msgstr ""
 
-#: includes/class-unbox-admin.php:91
+#: includes/class-unbox-admin.php:99
 msgid "Not placed"
 msgstr ""
 
-#: includes/class-unbox-admin.php:92
+#: includes/class-unbox-admin.php:100
 msgid "(skipped so that WordPress core and settings are not overwritten)"
 msgstr ""
 
-#: includes/class-unbox-admin.php:93 cli/unbox-cli.php:158
+#: includes/class-unbox-admin.php:101
 msgid "Created by"
 msgstr ""
 
-#: includes/class-unbox-admin.php:94
+#: includes/class-unbox-admin.php:102
 msgid "Destination URL (this site's URL)"
 msgstr ""
 
-#: includes/class-unbox-admin.php:95
-msgid ""
-"This site's files and database will be overwritten with the archive. To be "
-"able to go back, export this site first. You will be logged out when it "
-"finishes; log in again with a user from the source site."
+#: includes/class-unbox-admin.php:103
+msgid "This site's files and database will be overwritten with the archive. To be able to go back, export this site first. You will be logged out when it finishes; log in again with a user from the source site."
 msgstr ""
 
-#: includes/class-unbox-admin.php:96
+#: includes/class-unbox-admin.php:104
 msgid "I understand this site will be overwritten"
 msgstr ""
 
-#: includes/class-unbox-admin.php:97 views/page.php:17
+#: includes/class-unbox-admin.php:105
+#: views/page.php:17
 msgid "Import"
 msgstr ""
 
-#: includes/class-unbox-admin.php:98
+#: includes/class-unbox-admin.php:106
 msgctxt "button"
 msgid "Import"
 msgstr ""
 
-#: includes/class-unbox-admin.php:99
+#: includes/class-unbox-admin.php:107
 msgid "Don't import"
 msgstr ""
 
-#: includes/class-unbox-admin.php:100
+#: includes/class-unbox-admin.php:108
 msgid "Check \"I understand this site will be overwritten\" first"
 msgstr ""
 
-#: includes/class-unbox-admin.php:101
+#: includes/class-unbox-admin.php:109
 msgid "Starting the import"
 msgstr ""
 
-#: includes/class-unbox-admin.php:102
-msgid "Import finished. Please log in again."
-msgstr ""
-
-#. translators: placeholders are filled in by the admin screen script
-#: includes/class-unbox-admin.php:104
-#, php-format
-msgid ""
-"%s errors occurred while importing the database (most are harmless, but "
-"check the site)."
-msgstr ""
-
-#. translators: placeholders are filled in by the admin screen script
-#: includes/class-unbox-admin.php:106
-#, php-format
-msgid "%s SQL statements were not executed for safety (see the log)."
-msgstr ""
-
-#: includes/class-unbox-admin.php:107
-msgid "Saving the permalink settings once makes sure page URLs work."
-msgstr ""
-
-#: includes/class-unbox-admin.php:108
-msgid "Go to login"
-msgstr ""
-
-#: includes/class-unbox-admin.php:109
-msgid "Nothing yet"
-msgstr ""
-
 #: includes/class-unbox-admin.php:110
-msgid "Delete"
+msgid "Import finished. Please log in again."
 msgstr ""
 
 #. translators: placeholders are filled in by the admin screen script
 #: includes/class-unbox-admin.php:112
 #, php-format
+msgid "%s errors occurred while importing the database (most are harmless, but check the site)."
+msgstr ""
+
+#. translators: placeholders are filled in by the admin screen script
+#: includes/class-unbox-admin.php:114
+#, php-format
+msgid "%s SQL statements were not executed for safety (see the log)."
+msgstr ""
+
+#: includes/class-unbox-admin.php:115
+msgid "Saving the permalink settings once makes sure page URLs work."
+msgstr ""
+
+#: includes/class-unbox-admin.php:116
+msgid "Go to login"
+msgstr ""
+
+#: includes/class-unbox-admin.php:117
+msgid "Nothing yet"
+msgstr ""
+
+#: includes/class-unbox-admin.php:118
+msgid "Delete"
+msgstr ""
+
+#. translators: placeholders are filled in by the admin screen script
+#: includes/class-unbox-admin.php:120
+#, php-format
 msgid "Delete %s? This cannot be undone."
 msgstr ""
 
-#: includes/class-unbox-admin.php:154
+#: includes/class-unbox-admin.php:161
 msgid "You do not have permission"
 msgstr ""
 
-#: includes/class-unbox-admin.php:157
+#: includes/class-unbox-admin.php:164
 msgid "This page has expired. Please reload it"
 msgstr ""
 
 #. translators: %s: error message
-#: includes/class-unbox-admin.php:181 cli/unbox-cli.php:267
+#: includes/class-unbox-admin.php:188
 #, php-format
 msgid "Error: %s"
 msgstr ""
 
-#: includes/class-unbox-admin.php:227
+#: includes/class-unbox-admin.php:244
 msgid "Already in progress"
 msgstr ""
 
-#: includes/class-unbox-admin.php:305
+#: includes/class-unbox-admin.php:324
 msgid "This file is not in the Unbox folder, so it cannot be deleted here"
 msgstr ""
 
-#: includes/class-unbox-admin.php:308
+#: includes/class-unbox-admin.php:327
 msgid "Could not delete the file"
 msgstr ""
 
-#: includes/class-unbox-admin.php:323 includes/class-unbox-admin.php:343
+#: includes/class-unbox-admin.php:343
+#: includes/class-unbox-admin.php:365
 msgid "The upload chunk exceeded the server limit"
 msgstr ""
 
-#: includes/class-unbox-admin.php:332 views/page.php:97
+#: includes/class-unbox-admin.php:352
+#: views/page.php:97
 msgid "Choose a .unbox or .wpress file"
 msgstr ""
 
 #. translators: %s: PHP upload error code
-#: includes/class-unbox-admin.php:345
+#: includes/class-unbox-admin.php:367
 #, php-format
-msgid ""
-"The upload was not received (error %s). The chunk may be larger than the "
-"server limit"
-msgstr ""
-
-#: includes/class-unbox-admin.php:350
-msgid "Cannot write the upload"
-msgstr ""
-
-#: includes/class-unbox-admin.php:359
-msgid "Could not move the uploaded file"
+msgid "The upload was not received (error %s). The chunk may be larger than the server limit"
 msgstr ""
 
 #: includes/class-unbox-admin.php:372
+msgid "Cannot write the upload"
+msgstr ""
+
+#: includes/class-unbox-admin.php:381
+msgid "Could not move the uploaded file"
+msgstr ""
+
+#: includes/class-unbox-admin.php:394
 msgid "You do not have permission, or this page has expired"
 msgstr ""
 
-#: includes/class-unbox-dumper.php:27 includes/class-unbox-import.php:306
-msgid "Only mysqli database connections are supported"
-msgstr ""
-
 #. translators: %1$s: error message, %2$s: SQL
-#: includes/class-unbox-dumper.php:34
+#: includes/class-unbox-dumper.php:40
 #, php-format
 msgid "Failed to read the database: %1$s / %2$s"
 msgstr ""
 
 #. translators: %s: file path
-#: includes/class-unbox-dumper.php:127
+#: includes/class-unbox-dumper.php:168
 #, php-format
 msgid "Cannot write the SQL file: %s"
 msgstr ""
 
-#: includes/class-unbox-export.php:38
+#: includes/class-unbox-export.php:46
 msgid "Enter the LocalWP site name (letters, numbers and hyphens)"
 msgstr ""
 
 #. translators: %s: path
-#: includes/class-unbox-export.php:52
+#: includes/class-unbox-export.php:60
 #, php-format
 msgid "Invalid exclusion: %s"
 msgstr ""
 
 #. translators: %s: file or folder name
-#: includes/class-unbox-export.php:66
+#: includes/class-unbox-export.php:74
 #, php-format
 msgid "This item cannot be selected from outside WordPress: %s"
 msgstr ""
 
-#: includes/class-unbox-export.php:71
-msgid ""
-"Folders outside WordPress cannot be included in .wpress (All-in-One WP "
-"Migration compatible). Choose .unbox or LocalWP zip"
+#: includes/class-unbox-export.php:79
+msgid "Folders outside WordPress cannot be included in .wpress (All-in-One WP Migration compatible). Choose .unbox or LocalWP zip"
 msgstr ""
 
-#: includes/class-unbox-export.php:91 views/page.php:35
+#: includes/class-unbox-export.php:99
+#: views/page.php:35
 msgid ".wpress (All-in-One WP Migration compatible)"
 msgstr ""
 
-#: includes/class-unbox-export.php:91 views/page.php:42
+#: includes/class-unbox-export.php:99
+#: views/page.php:42
 msgid "LocalWP zip"
 msgstr ""
 
-#: includes/class-unbox-export.php:107 includes/class-unbox-import.php:16
+#: includes/class-unbox-export.php:115
+#: includes/class-unbox-import.php:25
 msgid "Multisite is not supported yet"
 msgstr ""
 
 #. translators: %s: format name
-#: includes/class-unbox-export.php:119
+#: includes/class-unbox-export.php:127
 #, php-format
 msgid "Started exporting (format: %s)"
 msgstr ""
 
 #. translators: %1$s: number of files, %2$s: size
-#: includes/class-unbox-export.php:131
+#: includes/class-unbox-export.php:138
 #, php-format
 msgid "Found %1$s files (%2$s)"
 msgstr ""
 
 #. translators: %1$d: tables, %2$s: rows, %3$s: size
-#: includes/class-unbox-export.php:145
+#: includes/class-unbox-export.php:152
 #, php-format
 msgid "Exported the database (%1$d tables, %2$s rows, %3$s)"
 msgstr ""
 
 #. translators: %s: number of files
-#: includes/class-unbox-export.php:163
+#: includes/class-unbox-export.php:170
 #, php-format
 msgid "Counting files (%s)"
 msgstr ""
 
 #. translators: %1$d: tables done, %2$d: total tables
-#: includes/class-unbox-export.php:167
+#: includes/class-unbox-export.php:174
 #, php-format
 msgid "Exporting the database (%1$d / %2$d tables)"
 msgstr ""
 
 #. translators: %1$s: size done, %2$s: total size
-#: includes/class-unbox-export.php:171
+#: includes/class-unbox-export.php:178
 #, php-format
 msgid "Building the archive (%1$s / %2$s)"
 msgstr ""
 
-#: includes/class-unbox-export.php:173
+#: includes/class-unbox-export.php:180
 msgid "Export finished"
 msgstr ""
 
 #. translators: %s: folder path
-#: includes/class-unbox-export.php:308
+#: includes/class-unbox-export.php:314
 #, php-format
 msgid "Skipped an unreadable folder: %s"
 msgstr ""
 
 #. translators: %s: path
-#: includes/class-unbox-export.php:322
+#: includes/class-unbox-export.php:328
 #, php-format
 msgid "Skipped a symbolic link: %s"
 msgstr ""
 
 #. translators: %s: path
-#: includes/class-unbox-export.php:328
+#: includes/class-unbox-export.php:334
 #, php-format
 msgid "Skipped an unreadable file: %s"
 msgstr ""
 
 #. translators: %1$s: file name, %2$s: reason
-#: includes/class-unbox-export.php:413
+#: includes/class-unbox-export.php:419
 #, php-format
 msgid "Skipped: %1$s (%2$s)"
 msgstr ""
 
-#: includes/class-unbox-export.php:452
+#: includes/class-unbox-export.php:458
 msgid "Could not move the finished file"
 msgstr ""
 
 #. translators: %1$s: file name, %2$s: size
-#: includes/class-unbox-export.php:455 cli/unbox-cli.php:256
+#: includes/class-unbox-export.php:461
 #, php-format
 msgid "Done: %1$s (%2$s)"
 msgstr ""
 
-#: includes/class-unbox-import.php:19
-msgid ""
-"Import LocalWP zips with \"Import site\" in LocalWP. Only .unbox and .wpress "
-"files can be imported here"
+#: includes/class-unbox-import.php:28
+msgid "Import LocalWP zips with \"Import site\" in LocalWP. Only .unbox and .wpress files can be imported here"
 msgstr ""
 
 #. translators: %s: file name
-#: includes/class-unbox-import.php:31
+#: includes/class-unbox-import.php:40
 #, php-format
 msgid "Preparing to import: %s"
 msgstr ""
 
 #. translators: %s: number of files
-#: includes/class-unbox-import.php:44
+#: includes/class-unbox-import.php:53
 #, php-format
 msgid "Extracted %s files"
 msgstr ""
 
 #. translators: %s: number of SQL statements
-#: includes/class-unbox-import.php:55
+#: includes/class-unbox-import.php:64
 #, php-format
 msgid "Imported the database into temporary tables (%s statements)"
 msgstr ""
 
 #. translators: %s: number of files
-#: includes/class-unbox-import.php:71
+#: includes/class-unbox-import.php:80
 #, php-format
 msgid "Checking the contents (%s files)"
 msgstr ""
 
-#: includes/class-unbox-import.php:73
+#: includes/class-unbox-import.php:82
 msgid "Waiting for confirmation"
 msgstr ""
 
 #. translators: %1$s: files done, %2$s: total files
-#: includes/class-unbox-import.php:75
+#: includes/class-unbox-import.php:84
 #, php-format
 msgid "Extracting files (%1$s / %2$s)"
 msgstr ""
 
-#: includes/class-unbox-import.php:77
+#: includes/class-unbox-import.php:86
 msgid "Extracting the database"
 msgstr ""
 
 #. translators: %1$s: size done, %2$s: total size
-#: includes/class-unbox-import.php:80
+#: includes/class-unbox-import.php:89
 #, php-format
 msgid "Importing the database (%1$s / %2$s)"
 msgstr ""
 
-#: includes/class-unbox-import.php:82
+#: includes/class-unbox-import.php:91
 msgid "Swapping the database"
 msgstr ""
 
-#: includes/class-unbox-import.php:94
-msgid ""
-"The end of the file was not found. The upload or download may have been cut "
-"off, or this is not a .unbox / .wpress file"
+#: includes/class-unbox-import.php:103
+msgid "The end of the file was not found. The upload or download may have been cut off, or this is not a .unbox / .wpress file"
 msgstr ""
 
-#: includes/class-unbox-import.php:115
+#: includes/class-unbox-import.php:124
 msgid "Multisite archives are not supported yet"
 msgstr ""
 
-#: includes/class-unbox-import.php:118
-msgid ""
-"package.json is missing. This does not look like a file made by Unbox or All-"
-"in-One WP Migration"
+#: includes/class-unbox-import.php:127
+msgid "package.json is missing. This does not look like a file made by Unbox or All-in-One WP Migration"
 msgstr ""
 
-#: includes/class-unbox-import.php:122
+#: includes/class-unbox-import.php:131
 msgid "Cannot read package.json"
 msgstr ""
 
-#: includes/class-unbox-import.php:125
+#: includes/class-unbox-import.php:134
 msgid "Encrypted archives are not supported yet"
 msgstr ""
 
-#: includes/class-unbox-import.php:128
+#: includes/class-unbox-import.php:137
 msgid "Compressed archives are not supported yet"
 msgstr ""
 
 #. translators: %1$s: number of files, %2$s: URL
-#: includes/class-unbox-import.php:132
+#: includes/class-unbox-import.php:141
 #, php-format
 msgid "Checked the contents (%1$s files, source site %2$s)"
 msgstr ""
 
-#: includes/class-unbox-import.php:162
+#: includes/class-unbox-import.php:171
 msgid "This job is not waiting for confirmation"
 msgstr ""
 
-#: includes/class-unbox-import.php:166
+#: includes/class-unbox-import.php:175
 msgid "The destination URL is not valid"
 msgstr ""
 
 #. translators: %s: URL
-#: includes/class-unbox-import.php:177
+#: includes/class-unbox-import.php:186
 #, php-format
 msgid "Started importing (destination %s)"
 msgstr ""
 
 #. translators: %s: file name
-#: includes/class-unbox-import.php:232
+#: includes/class-unbox-import.php:250
 #, php-format
-msgid ""
-"Skipped files that would overwrite WordPress core or wp-config.php (e.g. %s)"
+msgid "Skipped files that would overwrite WordPress core or wp-config.php (e.g. %s)"
 msgstr ""
 
-#: includes/class-unbox-import.php:292 cli/unbox-cli.php:187
+#: includes/class-unbox-import.php:309
 msgid "The archive has no database.sql"
 msgstr ""
 
 #. translators: %s: SQL
-#: includes/class-unbox-import.php:360
+#: includes/class-unbox-import.php:396
 #, php-format
 msgid "Statement not executed: %s"
 msgstr ""
 
 #. translators: %s: error message
-#: includes/class-unbox-import.php:409
+#: includes/class-unbox-import.php:447
 #, php-format
 msgid "First error: %s"
 msgstr ""
 
 #. translators: %s: table name
-#: includes/class-unbox-import.php:410
+#: includes/class-unbox-import.php:448
 #, php-format
-msgid ""
-"The database import is incomplete, so the swap was cancelled (the %s table "
-"is missing). The current database is unchanged."
+msgid "The database import is incomplete, so the swap was cancelled (the %s table is missing). The current database is unchanged."
 msgstr ""
 
 #. translators: %s: error message
-#: includes/class-unbox-import.php:432
+#: includes/class-unbox-import.php:470
 #, php-format
 msgid "Failed to swap the database: %s (the current database is unchanged)"
 msgstr ""
 
-#: includes/class-unbox-import.php:437
+#: includes/class-unbox-import.php:475
 msgid "Swapped the database"
 msgstr ""
 
-#: includes/class-unbox-import.php:454
+#: includes/class-unbox-import.php:491
 msgid "Import finished"
 msgstr ""
 
-#: includes/class-unbox-sql.php:111
+#: includes/class-unbox-sql.php:118
 msgid "Unclosed quote in SQL"
 msgstr ""
 
 #. translators: %s: file path
-#: includes/class-unbox-sql.php:215
+#: includes/class-unbox-sql.php:222
 #, php-format
 msgid "Cannot open the SQL file: %s"
 msgstr ""
 
 #. translators: %s: folder path
-#: includes/class-unbox-storage.php:41
+#: includes/class-unbox-storage.php:48
 #, php-format
 msgid "Cannot create the working folder: %s (wp-content must be writable)"
 msgstr ""
 
-#: includes/class-unbox-storage.php:98
+#: includes/class-unbox-storage.php:105
 msgid "Invalid file"
 msgstr ""
 
 #. translators: %s: file name
-#: includes/class-unbox-storage.php:103
+#: includes/class-unbox-storage.php:110
 #, php-format
 msgid "File not found: %s"
 msgstr ""
 
-#: includes/class-unbox-storage.php:173
+#: includes/class-unbox-storage.php:180
 msgid "Invalid job"
 msgstr ""
 
-#: includes/class-unbox-storage.php:179
+#: includes/class-unbox-storage.php:186
 msgid "Job not found (it has already finished or was cancelled)"
 msgstr ""
 
-#: includes/class-unbox-storage.php:183
+#: includes/class-unbox-storage.php:190
 msgid "Cannot read the job state"
 msgstr ""
 
-#: includes/class-unbox-storage.php:196
+#: includes/class-unbox-storage.php:203
 msgid "Cannot save the job state (the disk may be full)"
 msgstr ""
 
 #. translators: %s: path
-#: includes/class-unbox-wpress.php:44
+#: includes/class-unbox-wpress.php:51
 #, php-format
 msgid "Invalid path in the archive: %s"
 msgstr ""
 
 #. translators: %s: path
-#: includes/class-unbox-wpress.php:47
+#: includes/class-unbox-wpress.php:54
 #, php-format
 msgid "The archive contains an absolute path: %s"
 msgstr ""
 
 #. translators: %s: path
-#: includes/class-unbox-wpress.php:55
+#: includes/class-unbox-wpress.php:62
 #, php-format
 msgid "The archive contains a path pointing outside: %s"
 msgstr ""
 
-#: includes/class-unbox-wpress.php:60
+#: includes/class-unbox-wpress.php:67
 msgid "The archive contains an empty path"
 msgstr ""
 
 #. translators: %s: file path
-#: includes/class-unbox-wpress.php:75
+#: includes/class-unbox-wpress.php:85
 #, php-format
 msgid "Cannot open the archive: %s"
 msgstr ""
 
 #. translators: %s: byte offset
-#: includes/class-unbox-wpress.php:117
+#: includes/class-unbox-wpress.php:127
 #, php-format
 msgid "The archive is truncated (at byte %s)"
 msgstr ""
 
 #. translators: %s: byte offset
-#: includes/class-unbox-wpress.php:122
+#: includes/class-unbox-wpress.php:132
 #, php-format
 msgid "Cannot read a header (at byte %s)"
 msgstr ""
 
 #. translators: %s: byte offset
-#: includes/class-unbox-wpress.php:132
+#: includes/class-unbox-wpress.php:142
 #, php-format
-msgid ""
-"Cannot read the size in a header (at byte %s). The archive may be corrupted"
+msgid "Cannot read the size in a header (at byte %s). The archive may be corrupted"
 msgstr ""
 
 #. translators: %s: file name
-#: includes/class-unbox-wpress.php:138
+#: includes/class-unbox-wpress.php:148
 #, php-format
 msgid "The archive is truncated: %s"
 msgstr ""
 
 #. translators: %s: folder path
-#: includes/class-unbox-wpress.php:157
+#: includes/class-unbox-wpress.php:169
 #, php-format
 msgid "Cannot create the folder: %s"
 msgstr ""
 
 #. translators: %s: file path
-#: includes/class-unbox-wpress.php:161
+#: includes/class-unbox-wpress.php:173
+#: includes/class-unbox-wpress.php:204
 #, php-format
 msgid "Cannot write the file: %s"
 msgstr ""
 
 #. translators: %s: file name
-#: includes/class-unbox-wpress.php:172 includes/class-unbox-wpress.php:210
+#: includes/class-unbox-wpress.php:184
+#: includes/class-unbox-wpress.php:229
 #, php-format
 msgid "Cannot read the archive: %s"
 msgstr ""
 
 #. translators: %s: file path
-#: includes/class-unbox-wpress.php:176 includes/class-unbox-wpress.php:255
-#: includes/class-unbox-zip.php:64
+#: includes/class-unbox-wpress.php:188
+#: includes/class-unbox-wpress.php:274
+#: includes/class-unbox-zip.php:71
 #, php-format
 msgid "Failed to write (the disk may be full): %s"
 msgstr ""
 
 #. translators: %s: file name
-#: includes/class-unbox-wpress.php:194
+#: includes/class-unbox-wpress.php:213
 #, php-format
 msgid "Too large to read: %s"
 msgstr ""
 
 #. translators: %s: file path
-#: includes/class-unbox-wpress.php:229
+#: includes/class-unbox-wpress.php:248
 #, php-format
 msgid "Cannot write the archive: %s"
 msgstr ""
 
 #. translators: %s: file path
-#: includes/class-unbox-wpress.php:264
+#: includes/class-unbox-wpress.php:283
 #, php-format
 msgid "The path is too long for the archive: %s"
 msgstr ""
 
 #. translators: %s: file path
-#: includes/class-unbox-wpress.php:284 includes/class-unbox-zip.php:128
+#: includes/class-unbox-wpress.php:303
+#: includes/class-unbox-zip.php:135
 #, php-format
 msgid "Cannot read the file: %s"
 msgstr ""
 
 #. translators: %s: file path
-#: includes/class-unbox-zip.php:28
+#: includes/class-unbox-zip.php:35
 #, php-format
 msgid "Cannot write the zip: %s"
 msgstr ""
 
 #. translators: %s: file path
-#: includes/class-unbox-zip.php:107
+#: includes/class-unbox-zip.php:114
 #, php-format
 msgid "Cannot write a working file: %s"
 msgstr ""
 
 #. translators: %s: file name
-#: includes/class-unbox-zip.php:163
+#: includes/class-unbox-zip.php:170
 #, php-format
 msgid "Size mismatch: %s"
 msgstr ""
 
 #: views/page.php:13
-msgid ""
-"Export a whole site and import it into another WordPress. There is no size "
-"limit."
+msgid "Export a whole site and import it into another WordPress. There is no size limit."
 msgstr ""
 
 #: views/page.php:18
@@ -760,15 +755,11 @@ msgid "For importing into WordPress on another server with Unbox."
 msgstr ""
 
 #: views/page.php:36
-msgid ""
-"For when the destination uses All-in-One WP Migration. Unbox can import it "
-"too."
+msgid "For when the destination uses All-in-One WP Migration. Unbox can import it too."
 msgstr ""
 
 #: views/page.php:43
-msgid ""
-"Can be passed straight to \"Import site\" in LocalWP. URLs are replaced at "
-"export time."
+msgid "Can be passed straight to \"Import site\" in LocalWP. URLs are replaced at export time."
 msgstr ""
 
 #: views/page.php:49
@@ -778,15 +769,11 @@ msgstr ""
 #. translators: %s: URL such as http://example.local
 #: views/page.php:55
 #, php-format
-msgid ""
-"URLs in the zip will be %s. If you give the site a different name in "
-"LocalWP, LocalWP replaces them to match."
+msgid "URLs in the zip will be %s. If you give the site a different name in LocalWP, LocalWP replaces them to match."
 msgstr ""
 
 #: views/page.php:61
-msgid ""
-"Include WordPress core (the site starts with the same version as the "
-"original)"
+msgid "Include WordPress core (the site starts with the same version as the original)"
 msgstr ""
 
 #: views/page.php:66
@@ -794,10 +781,7 @@ msgid "Folders and files outside WordPress"
 msgstr ""
 
 #: views/page.php:67
-msgid ""
-"Items directly in the WordPress folder, other than wp-content. Check the "
-"ones to include. On import they are placed in the same location at the "
-"destination (URLs inside them are not rewritten)."
+msgid "Items directly in the WordPress folder, other than wp-content. Check the ones to include. On import they are placed in the same location at the destination (URLs inside them are not rewritten)."
 msgstr ""
 
 #: views/page.php:68
@@ -858,9 +842,7 @@ msgstr ""
 #. translators: 1: folder path for Unbox files, 2: All-in-One WP Migration backup folder
 #: views/page.php:115
 #, php-format
-msgid ""
-"Large files can be uploaded by FTP to %1$s and then imported from the "
-"\"Files\" tab. Files in %2$s from All-in-One WP Migration can be chosen too."
+msgid "Large files can be uploaded by FTP to %1$s and then imported from the \"Files\" tab. Files in %2$s from All-in-One WP Migration can be chosen too."
 msgstr ""
 
 #: views/page.php:127
@@ -884,85 +866,9 @@ msgid "Loading…"
 msgstr ""
 
 #: views/page.php:132
-msgid ""
-"These files are stored where they cannot be opened directly by URL. Delete "
-"them when you no longer need them."
+msgid "These files are stored where they cannot be opened directly by URL. Delete them when you no longer need them."
 msgstr ""
 
 #: views/page.php:143
 msgid "Log"
-msgstr ""
-
-#: cli/unbox-cli.php:73
-msgid "Usage:"
-msgstr ""
-
-#: cli/unbox-cli.php:73
-msgid "output folder"
-msgstr ""
-
-#: cli/unbox-cli.php:73
-msgid "site name"
-msgstr ""
-
-#: cli/unbox-cli.php:90
-msgid ""
-"The end of the file was not found (it may be cut off, or it is not "
-"a .unbox / .wpress file)"
-msgstr ""
-
-#: cli/unbox-cli.php:139
-msgid "Entries"
-msgstr ""
-
-#: cli/unbox-cli.php:139
-#, php-format
-msgid "%1$s (contents %2$s)"
-msgstr ""
-
-#: cli/unbox-cli.php:142
-msgid "WordPress URL"
-msgstr ""
-
-#: cli/unbox-cli.php:146
-msgid "none"
-msgstr ""
-
-#: cli/unbox-cli.php:148
-msgid "Active plugins"
-msgstr ""
-
-#: cli/unbox-cli.php:178
-#, php-format
-msgid "Extracted %1$s entries to %2$s"
-msgstr ""
-
-#: cli/unbox-cli.php:184
-msgid "Use lowercase letters, numbers and hyphens for the site name"
-msgstr ""
-
-#: cli/unbox-cli.php:191
-#, php-format
-msgid "The output already exists: %s"
-msgstr ""
-
-#: cli/unbox-cli.php:206
-msgid "Converting the database"
-msgstr ""
-
-#: cli/unbox-cli.php:228
-msgid "Building the zip"
-msgstr ""
-
-#: cli/unbox-cli.php:257
-msgid ""
-"In LocalWP, choose this zip with \"Import an existing site\". Any site name "
-"is fine (URLs are replaced to match the name LocalWP gives)"
-msgstr ""
-
-#: cli/unbox-cli.php:259
-#, php-format
-msgid ""
-"Note: %s values could not be read as serialized data (they were replaced as "
-"plain text)"
 msgstr ""
